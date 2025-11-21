@@ -4,6 +4,11 @@ const path = require("path");
 const { readFile, writeFile } = require("../util/file");
 
 function checkSymbolNotice(symbol, price) {
+  const noticeMsg = {
+    warningMsg: [],
+    infoMsg: [],
+  };
+  
   const configRawContent = readFile(
     "notice.json",
     path.join(__dirname, "../../")
@@ -38,9 +43,11 @@ function checkSymbolNotice(symbol, price) {
         console.log("=============warning============");
         isWarningExist = true;
       }
-      console.log(
-        `【warning】${symbol} 突破 ${warningTargetItem.price} 点位, 当前价格：${price}`
-      );
+
+      const warningMsgContent =  `【warning】${symbol} 突破 ${warningTargetItem.price} ↓ 点位, 当前价格：${price}`;
+      console.log(warningMsgContent);
+
+      noticeMsg.warningMsg.push(warningMsgContent);
     }
   }
 
@@ -65,11 +72,14 @@ function checkSymbolNotice(symbol, price) {
         isInfoExist = true;
       }
 
-      console.log(
-        `【info】${symbol} 突破 ${infoTargetItem.price} 点位, 当前价格：${price}`
-      );
+      const infoMsgContent = `【info】${symbol} 突破 ${infoTargetItem.price} ↑ 点位, 当前价格：${price}`;
+      console.log(infoMsgContent);
+
+      noticeMsg.infoMsg.push(infoMsgContent);
     }
   }
+
+  return noticeMsg;
 }
 
 module.exports = {

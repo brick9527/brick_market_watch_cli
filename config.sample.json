@@ -14,5 +14,9 @@
       }
     ]
   },
-  "symbols": ["BTCUSDT"]
+  "symbols": ["BTCUSDT"],
+  "dingtalk": {
+    "webhook": "http://test.com",
+    "secret": "my_secret"
+  }
 }
