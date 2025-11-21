@@ -1,0 +1,33 @@
+{
+  "name": "brick_market_watch_cli",
+  "version": "0.0.1",
+  "description": "A market watch cli tool",
+  "keywords": [
+    "brick9527",
+    "market-watch"
+  ],
+  "homepage": "https://github.com/brick9527/brick_market_watch_cli#readme",
+  "bugs": {
+    "url": "https://github.com/brick9527/brick_market_watch_cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brick9527/brick_market_watch_cli.git"
+  },
+  "license": "MIT",
+  "author": "brick9527",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@binance/connector": "^3.6.1",
+    "@binance/spot": "^24.0.0",
+    "axios": "^1.13.2",
+    "dayjs": "^1.11.19",
+    "ipdb": "^0.3.3",
+    "lodash": "^4.17.21",
+    "qqwry.ipdb": "^2025.11.19"
+  }
+}
