@@ -1,0 +1,34 @@
+{
+  "warning_target": {
+    "BTCUSDT": [
+      {
+        "enable": true,
+        "price": "85000",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "83000",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      }
+    ]
+  },
+  "info_target": {
+    "BTCUSDT": [
+      {
+        "enable": true,
+        "price": "105000",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "110000",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      }
+    ]
+  }
+}

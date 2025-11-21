@@ -1,10 +1,11 @@
 const { getSymbolAvgPrice, getTrickerPrice } = require('./watch');
 
-async function run() {
-  const symbolList = ['BTCUSDT', 'SOLUSDT'];
-  await getSymbolAvgPrice(symbolList);
+const config = require('../../../config.json');
 
-  await getTrickerPrice(symbolList);
+async function run() {
+  // await getSymbolAvgPrice(config.symbols);
+
+  await getTrickerPrice(config.symbols, true);
 }
 
 run();

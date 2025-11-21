@@ -22,7 +22,6 @@
     "test": "test"
   },
   "dependencies": {
-    "@binance/connector": "^3.6.1",
     "@binance/spot": "^24.0.0",
     "axios": "^1.13.2",
     "dayjs": "^1.11.19",
