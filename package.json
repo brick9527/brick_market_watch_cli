@@ -19,7 +19,9 @@
   "type": "commonjs",
   "main": "src/index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "checknet": "node src/controller/check_net/run.js",
+    "watch": "node src/controller/watch/run.js"
   },
   "dependencies": {
     "@binance/spot": "^24.0.0",

@@ -14,21 +14,5 @@
       }
     ]
   },
-  "symbols": ["BTCUSDT"],
-  "warning_target": {
-    "BTCUSDT": [
-      {
-        "enable": true,
-        "price": "85000",
-        "name": "deafult_warning",
-        "desc": "some thing"
-      },
-      {
-        "enable": true,
-        "price": "83000",
-        "name": "deafult_warning",
-        "desc": "some thing"
-      }
-    ]
-  }
+  "symbols": ["BTCUSDT"]
 }
