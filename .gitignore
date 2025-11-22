@@ -2,3 +2,5 @@ config.json
 node_modules
 notice.json
 schedule.json
+
+notice.cache.json

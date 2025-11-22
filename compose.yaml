@@ -1,0 +1,15 @@
+services:
+  brickmarketwatchcli:
+    image: brickmarketwatchcli
+    build:
+      context: .
+      dockerfile: ./dockerfile
+    restart: always
+    volumes:
+      - ./config.json:/usr/src/app/config.json
+      - ./notice.json:/usr/src/app/notice.json
+      - ./schedule.json:/usr/src/app/schedule.json
+    environment:
+      NODE_ENV: production
+    command: ["npm", "run", "schedule"]
+    
