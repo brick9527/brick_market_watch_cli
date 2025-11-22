@@ -22,7 +22,8 @@
     "test": "test",
     "checknet": "node src/controller/check_net/run.js",
     "watch": "node src/controller/watch/run.js",
-    "getaccount": "node src/controller/get_account/run.js"
+    "getaccount": "node src/controller/get_account/run.js",
+    "schedule": "node bin/schedule.js"
   },
   "dependencies": {
     "@binance/spot": "^24.0.0",
@@ -30,6 +31,7 @@
     "dayjs": "^1.11.19",
     "ipdb": "^0.3.3",
     "lodash": "^4.17.21",
+    "node-schedule": "^2.1.1",
     "qqwry.ipdb": "^2025.11.19"
   }
 }
