@@ -21,7 +21,8 @@
   "scripts": {
     "test": "test",
     "checknet": "node src/controller/check_net/run.js",
-    "watch": "node src/controller/watch/run.js"
+    "watch": "node src/controller/watch/run.js",
+    "getaccount": "node src/controller/get_account/run.js"
   },
   "dependencies": {
     "@binance/spot": "^24.0.0",

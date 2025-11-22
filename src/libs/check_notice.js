@@ -40,7 +40,7 @@ function checkSymbolNotice(symbol, price) {
     if (warningTargetPriceNum >= priceNum) {
       // 触发warning
       if (!isWarningExist) {
-        console.log("=============warning============");
+        console.log("=============warning=============");
         isWarningExist = true;
       }
 
@@ -68,7 +68,7 @@ function checkSymbolNotice(symbol, price) {
     if (infoTargetPriceNum <= priceNum) {
       // 触发info
       if (!isInfoExist) {
-        console.log("=============info============");
+        console.log("=============info=============");
         isInfoExist = true;
       }
 

@@ -41,7 +41,7 @@ async function getSymbolAvgPrice(symbolList = [], enableCheckNotice = false) {
 
   const result = await _allSettledResultFormatter(resultList, symbolList);
 
-  console.log("=============avgPrice============");
+  console.log("=============avgPrice=============");
   console.log(result);
 
   // 检查告警
@@ -65,7 +65,7 @@ async function getTrickerPrice(
   const closeLocalTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
   const result = await spotClient.restAPI.tickerPrice({ symbols: symbolList });
 
-  console.log("=============tickerPrice============");
+  console.log("=============tickerPrice=============");
 
   const data = await result.data();
   console.log({
