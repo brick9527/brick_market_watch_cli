@@ -1,6 +1,8 @@
 # brick_market_watch_cli
 
-## 安装
+<!-- TOC -->
+
+## 一、安装
 
 clone仓库
 
@@ -16,9 +18,9 @@ cd brick_market_watch_cli
 npm i
 ```
 
-## 补充配置文件
+## 二、补充配置文件
 
-### config.json
+### 2.1 config.json
 
 ```sh
 cp config.sample.json config.json
@@ -31,8 +33,11 @@ cp config.sample.json config.json
 - proxy: 本地代理相关配置
 - check_net: 检查网络配置，*可以不做修改*
 - symbols: 要盯盘的币对
+- dingtalk
+  - webhook: 钉钉机器人的webhook
+  - secret: 钉钉机器人的secret
 
-### notice.json
+### 2.2 notice.json
 
 ```sh
 cp notice.sample.json notice.json
@@ -40,21 +45,41 @@ cp notice.sample.json notice.json
 
 `notice.json`配置描述
 
-- warning_target: 
-  - warning_target.${item}.enable: 是否开启该指标检查
-  - warning_target.${item}.price: 价格阈值
-  - warning_target.${item}.name: 指标名称（暂未使用）
-  - warning_target.${item}.desc: 指标描述（暂未使用）
+- warning_target: 告警信号监听
+  - symbol: 要检测的币对名称，如`BTCUSDT`
+    - warning_target.${symbol}.enable: 是否开启该指标检查
+    - warning_target.${symbol}.price: 价格阈值
+    - warning_target.${symbol}.name: 指标名称（暂未使用）
+    - warning_target.${symbol}.desc: 指标描述（暂未使用）
+- info_target: 其他信息监听（如：出售信号）
+  - symbol: 要检测的币对名称，如`BTCUSDT`
+    - info_target.${symbol}.enable: 是否开启该指标检查
+    - info_target.${symbol}.price: 价格阈值
+    - info_target.${symbol}.name: 指标名称（暂未使用）
+    - info_target.${symbol}.desc: 指标描述（暂未使用）
 
-## 运行命令
+### 2.3 schedule.json
 
-### 检查网络
+```sh
+cp schedule.sample.json schedule.json
+```
+
+`schedule.json`配置描述
+
+- interval: 盯盘轮询周期（`Cron`格式）
+- check_net_interval: 自动巡检网络状态周期（`Cron`格式）
+- count_status_interval: 自动统计网络状态周期（`Cron`格式）
+- count_status_timerange: 状态统计完成后发送钉钉消息的时间段。如`[9, 21]`为每日9点后，至21:59前
+
+## 三、运行命令
+
+### 3.1 检查网络
 
 ```sh
 npm run checknet
 ```
 
-### 盯盘（单次）
+### 3.2 盯盘（单次）
 
 **warning：现目前工具暂未开发定时盯盘，自行调用需要掌握频率**
 
@@ -62,7 +87,7 @@ npm run checknet
 npm run watch
 ```
 
-## milestone
+## 四、milestone
 
 - [x] [1.0.0]
   - [x] 代理支持
@@ -76,5 +101,5 @@ npm run watch
   - [x] 项目启动检查各项状态
   - [x] 定期状态巡检+通知
   - [x] 优化命令行相关代码结构
-  - [ ] 增加配置文件说明
+  - [x] 增加配置文件说明
   - [x] 增加日志功能
