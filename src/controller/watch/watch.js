@@ -1,4 +1,5 @@
 const dayjs = require("dayjs");
+const _ = require('lodash');
 
 const spotClient = require("../../util/binance_spot_client");
 const { checkSymbolNotice } = require("../../libs/check_notice");
@@ -82,16 +83,24 @@ async function getTrickerPrice(
     }
   }
 
+  console.log('[debug] ', JSON.stringify(noticeGroup));
+
   if (sendDingtalkMsg) {
+    let hasNoticeMsg = false;
     // 整理 noticeGroup 的文本信息
     let msgContent = `<${closeLocalTime}>\n`;
-    const noticeGroupKeyList = Object.keys(noticeGroup);
-    for (const key of noticeGroupKeyList) {
-      if (!noticeGroup[key]) {
+    const symbolList = Object.keys(noticeGroup);
+    for (const symbolItem of symbolList) {
+      if (!noticeGroup[symbolItem]) {
         continue;
       }
 
-      msgContent += `# ${key}\n`;
+      if (_.get(noticeGroup, `${symbolItem}.warningMsg.length`, 0) === 0 && _.get(noticeGroup, `${symbolItem}.infoMsg.length`, 0) === 0) {
+        continue;
+      }
+
+      hasNoticeMsg = true;
+      msgContent += `# ${symbolItem}\n`;
 
       for (const msgType of Object.keys(noticeGroup[key])) {
         msgContent += noticeGroup[key][msgType].join('\n');
@@ -100,7 +109,11 @@ async function getTrickerPrice(
       msgContent += '\n--------------------------\n';
     }
 
-    await dingtalkRobot.sendText(msgContent);
+    console.log('[debug] ', msgContent);
+
+    if (hasNoticeMsg) {
+      await dingtalkRobot.sendText(msgContent);
+    }
     // await dingtalkRobot.sendText(
     // '【系统告警】服务器 CPU 使用率已达 92%！',
     // ['138xxxx1234', '139xxxx5678'], // 需要@的手机号
