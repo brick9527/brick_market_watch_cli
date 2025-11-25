@@ -9,7 +9,12 @@ RUN npm install --production --silent --registry=https://registry.npmmirror.com
 COPY config.sample.json config.json
 COPY notice.sample.json notice.json
 COPY schedule.sample.json schedule.json
+RUN mkdir -p logs/default \
+  && chmod 755 logs/default \
+  && chown -R node:node logs/default \
+  && chmod 755 logs \
+  && chown -R node:node logs
 # COPY . .
 # RUN chown -R node /usr/src/app
 USER node
-# CMD ["npm", "run", "schedule"]
+CMD ["npm", "run", "start"]

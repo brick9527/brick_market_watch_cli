@@ -10,6 +10,7 @@ services:
       - ./config.json:/usr/src/app/config.json
       - ./notice.json:/usr/src/app/notice.json
       - ./schedule.json:/usr/src/app/schedule.json
+      - ./logs:/usr/src/app/logs
     environment:
       NODE_ENV: production
     command: ["npm", "run", "schedule"]
