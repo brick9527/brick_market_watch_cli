@@ -24,5 +24,9 @@ async function runSchedule() {
   });
 }
 
-runSchedule();
+if (require.main === module) {
+  runSchedule();
+}
+
+module.exports = runSchedule;
 

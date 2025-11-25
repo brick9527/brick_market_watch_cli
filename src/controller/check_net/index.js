@@ -8,6 +8,7 @@ const IPDB = require('ipdb');
 const qqwryIPDB = require('qqwry.ipdb');
 
 const config = require('../../../config.json');
+const logger = require('../../util/log4js').getLogger('checknet');
 
 /**
  * 检查网络
@@ -33,7 +34,7 @@ async function checkNet() {
         IPInfoList.push({ ip, ...ipInfo.data });
     }
 
-    console.log(IPInfoList);
+    logger.info(IPInfoList);
 }
 
 

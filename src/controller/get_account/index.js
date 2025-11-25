@@ -1,10 +1,11 @@
 const spotClient = require("../../util/binance_spot_client");
+const logger = require('../../util/log4js').getLogger('getaccount');
 
 async function getAccount() {
   const response = await spotClient.restAPI.getAccount();
-  // console.log(response.rateLimits);
+  // logger.info(response.rateLimits);
 
-  console.log(await response.data());
+  logger.info(await response.data());
 }
 
 module.exports = getAccount;

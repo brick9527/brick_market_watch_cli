@@ -2,6 +2,7 @@ const axios = require('axios');
 const crypto = require('crypto'); // Node.js 内置加密模块，无需安装
 
 const config = require('../../config.json');
+const logger = require('./log4js').getLogger('dingtalk');
 
 class DingTalkRobot {
   /**
@@ -53,13 +54,13 @@ class DingTalkRobot {
 
       const result = response.data;
       if (result.errcode === 0) {
-        console.log('钉钉消息发送成功：', result.errmsg);
+        logger.info('钉钉消息发送成功：', result.errmsg);
       } else {
-        console.error('钉钉消息发送失败：', result);
+        logger.error('钉钉消息发送失败：', result);
       }
       return result;
     } catch (error) {
-      console.error('钉钉消息请求异常：', error.message);
+      logger.error('钉钉消息请求异常：', error.message);
       return { errcode: -1, errmsg: '请求失败', error: error.message };
     }
   }
@@ -109,7 +110,7 @@ async function testDingTalk() {
   const robot = new DingTalkRobot(WEBHOOK, SECRET);
 
   // 3. 发送文本消息（示例：@指定人）
-  console.log('发送文本消息...');
+  logger.info('发送文本消息...');
   await robot.sendText(
     '【系统告警】服务器 CPU 使用率已达 92%！',
     ['138xxxx1234', '139xxxx5678'], // 需要@的手机号
@@ -117,7 +118,7 @@ async function testDingTalk() {
   );
 
   // 4. 发送 Markdown 消息（示例：带排版和链接）
-  console.log('\n发送 Markdown 消息...');
+  logger.info('\n发送 Markdown 消息...');
   const markdownContent = `### 【接口监控报告】
 > 接口名称：/api/order/pay  
 > 响应时间：450ms（阈值：200ms）  
@@ -136,5 +137,5 @@ async function testDingTalk() {
 }
 
 // 执行测试
-testDingTalk().catch(console.error);
+testDingTalk().catch(logger.error);
 */

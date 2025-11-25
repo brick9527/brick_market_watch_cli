@@ -2,6 +2,7 @@ const _ = require("lodash");
 const path = require("path");
 
 const { readFile, writeFile } = require("../util/file");
+const logger = require('../util/log4js').getLogger('check_notice');
 
 function checkSymbolNotice(symbol, price) {
   const noticeMsg = {
@@ -40,12 +41,12 @@ function checkSymbolNotice(symbol, price) {
     if (warningTargetPriceNum >= priceNum) {
       // 触发warning
       if (!isWarningExist) {
-        console.log("=============warning=============");
+        logger.info("=============warning=============");
         isWarningExist = true;
       }
 
       const warningMsgContent =  `【warning】${symbol} 突破 ${warningTargetItem.price} ↓ 点位, 当前价格：${price}`;
-      console.log(warningMsgContent);
+      logger.info(warningMsgContent);
 
       noticeMsg.warningMsg.push(warningMsgContent);
     }
@@ -68,12 +69,12 @@ function checkSymbolNotice(symbol, price) {
     if (infoTargetPriceNum <= priceNum) {
       // 触发info
       if (!isInfoExist) {
-        console.log("=============info=============");
+        logger.info("=============info=============");
         isInfoExist = true;
       }
 
       const infoMsgContent = `【info】${symbol} 突破 ${infoTargetItem.price} ↑ 点位, 当前价格：${price}`;
-      console.log(infoMsgContent);
+      logger.info(infoMsgContent);
 
       noticeMsg.infoMsg.push(infoMsgContent);
     }

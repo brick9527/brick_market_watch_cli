@@ -4,6 +4,7 @@ const _ = require('lodash');
 const spotClient = require("../../util/binance_spot_client");
 const { checkSymbolNotice } = require("../../libs/check_notice");
 const dingtalkRobot = require("../../util/dingtalk");
+const logger = require('../../util/log4js').getLogger('watch');
 
 async function _allSettledResultFormatter(resultList, symbolList) {
   const result = [];
@@ -37,13 +38,13 @@ async function getSymbolAvgPrice(symbolList = [], enableCheckNotice = false) {
   try {
     resultList = await Promise.allSettled(requestInstanceList);
   } catch (err) {
-    console.log(err);
+    logger.error(err);
   }
 
   const result = await _allSettledResultFormatter(resultList, symbolList);
 
-  console.log("=============avgPrice=============");
-  console.log(result);
+  logger.info("=============avgPrice=============");
+  logger.info(result);
 
   // 检查告警
   if (enableCheckNotice) {
@@ -66,10 +67,10 @@ async function getTrickerPrice(
   const closeLocalTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
   const result = await spotClient.restAPI.tickerPrice({ symbols: symbolList });
 
-  console.log("=============tickerPrice=============");
+  logger.info("=============tickerPrice=============");
 
   const data = await result.data();
-  console.log({
+  logger.info({
     data,
     closeLocalTime,
   });
@@ -83,7 +84,7 @@ async function getTrickerPrice(
     }
   }
 
-  console.log('[debug] ', JSON.stringify(noticeGroup));
+  logger.info('[debug] ', JSON.stringify(noticeGroup));
 
   if (sendDingtalkMsg) {
     let hasNoticeMsg = false;
@@ -109,7 +110,7 @@ async function getTrickerPrice(
       msgContent += '\n--------------------------\n';
     }
 
-    console.log('[debug] ', msgContent);
+    logger.info('[debug] ', msgContent);
 
     if (hasNoticeMsg) {
       await dingtalkRobot.sendText(msgContent);

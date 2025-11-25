@@ -10,4 +10,9 @@ async function run() {
   await getTrickerPrice(config.symbols, true, true);
 }
 
-run();
+
+if (require.main === module) {
+  run();
+}
+
+module.exports = runSchedule;
