@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const nodeSchedule = require("node-schedule");
 const path = require("path");
 

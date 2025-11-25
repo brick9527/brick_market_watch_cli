@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { getSymbolAvgPrice, getTrickerPrice } = require('../src/controller/watch/index');
 
 const config = require('../config.json');

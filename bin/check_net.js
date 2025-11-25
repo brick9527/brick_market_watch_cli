@@ -1,5 +1,8 @@
+require('dotenv').config();
+
 const checkNet = require('../src/controller/check_net/index');
 const checkBn = require('../src/controller/check_net/check_bn');
+const logger = require('../src/util/log4js').getLogger('checknet');
 
 async function run() {
 
@@ -14,6 +17,12 @@ async function run() {
   } catch (err) {
     console.log(err);
   }
+
+  logger.debug('debug');
+  logger.info('info');
+  logger.warn('warn');
+  logger.error('error');
+
 
 }
 

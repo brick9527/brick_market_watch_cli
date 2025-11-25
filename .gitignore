@@ -2,5 +2,7 @@ config.json
 node_modules
 notice.json
 schedule.json
+.env
+logs
 
 notice.cache.json

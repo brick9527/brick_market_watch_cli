@@ -1,6 +1,7 @@
 services:
   brickmarketwatchcli:
     image: brickmarketwatchcli
+    container_name: brickmarketwatchcli
     build:
       context: .
       dockerfile: ./dockerfile
@@ -12,4 +13,14 @@ services:
     environment:
       NODE_ENV: production
     command: ["npm", "run", "schedule"]
+# 网络配置定义
+networks:
+  brickmarketwatch-network:
+    # 网络类型：桥接网络（默认类型，适合单机容器通信）
+    driver: bridge
+    # 可选：配置网络子网和网关（如需自定义IP段）
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16  # 自定义子网，避免与其他网络冲突
+          gateway: 172.28.0.1    # 网关地址
     
