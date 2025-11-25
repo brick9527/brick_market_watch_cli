@@ -1,6 +1,6 @@
-const { getSymbolAvgPrice, getTrickerPrice } = require('./watch');
+const { getSymbolAvgPrice, getTrickerPrice } = require('../src/controller/watch/index');
 
-const config = require('../../../config.json');
+const config = require('../config.json');
 
 async function run() {
   // await getSymbolAvgPrice(config.symbols);
