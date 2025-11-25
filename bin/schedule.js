@@ -4,7 +4,7 @@ const nodeSchedule = require("node-schedule");
 const path = require("path");
 
 const { readFile } = require("../src/util/file");
-const { getTrickerPrice } = require("../src/controller/watch/watch");
+const { getTrickerPrice } = require("../src/controller/watch/index");
 
 async function runSchedule() {
   const scheduleConfigRawContent = readFile(

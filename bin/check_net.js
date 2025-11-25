@@ -25,4 +25,4 @@ if (require.main === module) {
   run();
 }
 
-module.exports = runSchedule;
+module.exports = run;

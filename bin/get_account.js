@@ -6,4 +6,4 @@ if (require.main === module) {
   getAccount();
 }
 
-module.exports = runSchedule;
+module.exports = getAccount;

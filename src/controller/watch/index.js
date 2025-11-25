@@ -103,8 +103,8 @@ async function getTrickerPrice(
       hasNoticeMsg = true;
       msgContent += `# ${symbolItem}\n`;
 
-      for (const msgType of Object.keys(noticeGroup[key])) {
-        msgContent += noticeGroup[key][msgType].join('\n');
+      for (const msgType of Object.keys(noticeGroup[symbolItem])) {
+        msgContent += noticeGroup[symbolItem][msgType].join('\n');
       }
 
       msgContent += '\n--------------------------\n';
