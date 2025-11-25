@@ -6,17 +6,24 @@ const logger = require('../src/util/log4js').getLogger('checknet');
 
 async function run() {
 
+  const result = {
+    IPInfoList: [],
+    pingStatus: false,
+  };
+
   logger.info('=============检查网络信息=============');
-  await checkNet();
+  result.IPInfoList = await checkNet();
 
   logger.info('=============检查binance通讯=============');
   try {
     const pingResult = await checkBn();
-
+    result.pingStatus = pingResult;
     logger.info(`binance 连接状态： ${pingResult.status ? '正常' : '失联'}`)
   } catch (err) {
     logger.error(err);
   }
+
+  return result;
 
 }
 

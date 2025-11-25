@@ -1,14 +1,103 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const runSchedule = require('./schedule');
-const runCheckNet = require('./check_net');
+const dayjs = require('dayjs');
+const _ = require('lodash');
+const path = require('path');
+const nodeSchedule = require("node-schedule");
+
+const runSchedule = require("./schedule");
+const runCheckNet = require("./check_net");
+const { readFile } = require("../src/util/file");
+const logger = require('../src/util/log4js').getLogger('entrypoint');
+const dingtalkRobot = require('../src/util/dingtalk');
+
+// 先存到内存中，保留最新的20条记录
+let processCache = [];
 
 async function entrypoint() {
-  // 检查
+  // 注册轮询
+  await _scheduleCheckNet();
+  await _scheduleCountStatus();
+
+  // 检查网络状态
   await runCheckNet();
 
   // 盯盘
   await runSchedule();
+}
+
+async function _scheduleCheckNet() {
+  const scheduleConfigRawContent = readFile(
+    "schedule.json",
+    path.join(__dirname, "../")
+  );
+  const scheduleConfig = JSON.parse(scheduleConfigRawContent);
+
+  const checkNetInterval = scheduleConfig.check_net_interval;
+
+  nodeSchedule.scheduleJob(checkNetInterval, async () => {
+    const checkResult = await runCheckNet();
+
+    processCache.push({
+      ...checkResult,
+      timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    });
+  });
+}
+
+async function _scheduleCountStatus() {
+  const scheduleConfigRawContent = readFile(
+    "schedule.json",
+    path.join(__dirname, "../")
+  );
+  const scheduleConfig = JSON.parse(scheduleConfigRawContent);
+
+  const countStatusInterval = scheduleConfig.count_status_interval;
+
+  nodeSchedule.scheduleJob(countStatusInterval, async () => {
+    // 截取最后20条记录
+    processCache = processCache.slice(-20);
+
+    const pingStatusCount = {
+      failed: 0,
+      success: 0,
+      total: 0,
+    }
+    for (const cacheItem of processCache) {
+      pingStatusCount.total++;
+      if (cacheItem.pingStatus) {
+        pingStatusCount.success++;
+        continue;
+      }
+
+      pingStatusCount.failed++;
+    }
+
+    // 计算成功率
+    const rate = (pingStatusCount.success / pingStatusCount.total * 100).toFixed(2);
+
+    // 最后一次代理信息
+    const latestIpInfo = _.last(processCache);
+    if (!latestIpInfo) {
+      logger.warn('没有缓存数据，跳过本次消息发送');
+      return;
+    }
+
+    let msgContent = `【巡检信息】<${dayjs().format('YYYY-MM-DD HH:mm:ss')}>\n`;
+    msgContent += '# ping检测\n';
+    msgContent += `时间段：[${_.first(processCache)?.timestamp}, ${_.last(processCache)?.timestamp}]\n`;
+    msgContent += `成功率: ${rate} % (ping方法)\n`;
+    msgContent += `最后一次ping结果: ${latestIpInfo.pingStatus ? '成功' : '失败'}\n`;
+    msgContent += '# 最后一次信息\n';
+    msgContent += `${JSON.stringify(_.get(latestIpInfo, 'IPInfoList', []), null, 2)} \n`;
+
+    logger.info(msgContent);
+    // 判断是不是在每日约定时间
+    const countStatusTimerange = scheduleConfig.count_status_timerange || [9, 21];
+    if (dayjs().hour() >= _.first(countStatusTimerange) && dayjs().hour() <= _.last(countStatusTimerange)) {
+      await dingtalkRobot.sendText(msgContent);
+    }
+  });
 }
 
 entrypoint();

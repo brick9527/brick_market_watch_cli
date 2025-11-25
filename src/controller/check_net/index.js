@@ -3,12 +3,12 @@
  * 检查使用对应代理之后，对应的代理的ip地址以及所属信息
  * （规避币安的地域限制）
  */
-const axios = require('axios');
-const IPDB = require('ipdb');
-const qqwryIPDB = require('qqwry.ipdb');
+const axios = require("axios");
+const IPDB = require("ipdb");
+const qqwryIPDB = require("qqwry.ipdb");
 
-const config = require('../../../config.json');
-const logger = require('../../util/log4js').getLogger('checknet');
+const config = require("../../../config.json");
+const logger = require("../../util/log4js").getLogger("checknet");
 
 /**
  * 检查网络
@@ -18,38 +18,37 @@ const logger = require('../../util/log4js').getLogger('checknet');
  * @param {Object} proxy - 代理配置
  */
 async function checkNet() {
+  const ipdb = new IPDB(qqwryIPDB);
 
-    const ipdb = new IPDB(qqwryIPDB);
+  const IPInfoList = [];
+  const urls = config.check_net.urls || [];
+  const proxy = config.proxy;
 
-    const IPInfoList = [];
-    const urls = config.check_net.urls || [];
-    const proxy = config.proxy;
+  for (let i = 0; i < urls.length; i++) {
+    const urlConfig = urls[i];
 
-    for (let i = 0; i < urls.length; i++) {
+    const ip = await checkSingleNet(urlConfig, proxy);
+    const ipInfo = ipdb.find(ip);
+    IPInfoList.push({ ip, ...ipInfo.data });
+  }
 
-        const urlConfig = urls[i];
+  logger.info(IPInfoList);
 
-        const ip = await checkSingleNet(urlConfig, proxy);
-        const ipInfo = ipdb.find(ip);
-        IPInfoList.push({ ip, ...ipInfo.data });
-    }
-
-    logger.info(IPInfoList);
+  return IPInfoList;
 }
 
-
 async function checkSingleNet(urlConfig, proxyConfig) {
-    const result = await axios({
-        method: urlConfig.method,
-        url: urlConfig.url,
-        proxy: {
-            protocol: proxyConfig.protocol,
-            host: proxyConfig.host,
-            port: proxyConfig.port,
-        },
-    });
+  const result = await axios({
+    method: urlConfig.method,
+    url: urlConfig.url,
+    proxy: {
+      protocol: proxyConfig.protocol,
+      host: proxyConfig.host,
+      port: proxyConfig.port,
+    },
+  });
 
-    return result.data;
+  return result.data;
 }
 
 module.exports = checkNet;
