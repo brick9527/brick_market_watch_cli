@@ -11,6 +11,7 @@ services:
       - ./notice.json:/usr/src/app/notice.json
       - ./schedule.json:/usr/src/app/schedule.json
       - ./logs:/usr/src/app/logs
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
     environment:
       NODE_ENV: production
     command: ["npm", "run", "schedule"]
