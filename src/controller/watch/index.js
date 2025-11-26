@@ -58,12 +58,12 @@ async function getSymbolAvgPrice(spotClient, symbolList = [], enableCheckNotice 
   return result;
 }
 
-async function getTrickerPrice(
+async function getTrickerPrice({
   spotClient,
   symbolList = [],
   enableCheckNotice = false,
   sendDingtalkMsg = false
-) {
+}) {
   const closeLocalTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
   const result = await spotClient.restAPI.tickerPrice({ symbols: symbolList });
 

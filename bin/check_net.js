@@ -1,12 +1,14 @@
 require("dotenv").config();
+require('../src/libs/init_process')(process, 'checknet');
 
-const getProxyConfig = require("../src/libs/get_proxy");
 const checkNet = require("../src/controller/check_net/index");
 const checkBn = require("../src/controller/check_net/check_bn");
 const checkProxy = require("../src/controller/check_net/check_proxy");
-const logger = require("../src/util/log4js").getLogger("checknet");
 
-async function run(spotClient) {
+const logger = process.brickMarketWatchCli.ctx.logger;
+const proxyConfig = process.brickMarketWatchCli.ctx.proxyConfig;
+
+async function run() {
   const result = {
     IPInfoList: [],
     pingStatus: false,
@@ -14,7 +16,6 @@ async function run(spotClient) {
     proxyStatus: false,
   };
 
-  const proxyConfig = getProxyConfig();
   result.isProxyExist = true;
   logger.info("=============检查代理通信=============");
   if (proxyConfig?.proxy?.host && proxyConfig?.proxy?.port) {
@@ -44,7 +45,7 @@ async function run(spotClient) {
 
   logger.info("=============检查binance通讯=============");
   try {
-    const pingResult = await checkBn(spotClient);
+    const pingResult = await checkBn(process.brickMarketWatchCli.ctx.spotClient);
     result.pingStatus = pingResult;
     logger.info(`binance 连接状态： ${pingResult.status ? "成功" : "失败"}`);
   } catch (err) {
@@ -56,11 +57,7 @@ async function run(spotClient) {
 }
 
 if (require.main === module) {
-  const getClient = require('../src/util/binance_spot_client');
-  const getProxyConfig = require('../src/libs/get_proxy');
-  const proxyConfig = getProxyConfig();
-  const spotClient = getClient(proxyConfig);
-  run(spotClient);
+  run();
 }
 
 module.exports = run;

@@ -1,14 +1,11 @@
 require('dotenv').config();
+require('../src/libs/init_process')(process, 'getaccount');
 
 const getAccount = require("../src/controller/get_account/index");
 
 if (require.main === module) {
-  const getClient = require('../src/util/binance_spot_client');
-  const getProxyConfig = require('../src/libs/get_proxy');
-  const proxyConfig = getProxyConfig();
-  const spotClient = getClient(proxyConfig);
 
-  getAccount(spotClient);
+  getAccount(process.brickMarketWatchCli.ctx.spotClient);
 }
 
 module.exports = getAccount;

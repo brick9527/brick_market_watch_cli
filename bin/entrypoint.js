@@ -1,21 +1,17 @@
 require("dotenv").config();
+require('../src/libs/init_process')(process, 'entrypoint');
 
-const process = require('process');
 const dayjs = require("dayjs");
 const _ = require("lodash");
-const path = require("path");
 const nodeSchedule = require("node-schedule");
 
 const runCheckNet = require("./check_net");
-const { readFile } = require("../src/util/file");
-const logger = require("../src/util/log4js").getLogger("entrypoint");
-const { monitorDingTalkRobot } = require("../src/util/dingtalk");
-const getClient = require("../src/util/binance_spot_client");
-const getProxyConfig = require("../src/libs/get_proxy");
 const { getTrickerPrice } = require("../src/controller/watch/index");
 
-const proxyConfig = getProxyConfig();
-const spotClient = getClient(proxyConfig);
+const processObject = process.brickMarketWatchCli;
+const logger = processObject.ctx.logger;
+const monitorDingTalkRobot = processObject.ctx.dingtalk.monitorDingTalkRobot;
+const spotClient = processObject.ctx.spotClient;
 
 // 先存到内存中，保留最新的20条记录
 let processCache = [];
@@ -35,29 +31,25 @@ async function entrypoint() {
 }
 
 async function _scheduleWatch(spotClient) {
-  const scheduleConfigRawContent = readFile(
-    "schedule.json",
-    path.join(__dirname, "../")
-  );
-  const scheduleConfig = JSON.parse(scheduleConfigRawContent);
+  const scheduleConfig = processObject.ctx.scheduleConfig;
 
   const interval = scheduleConfig.interval;
 
   nodeSchedule.scheduleJob(interval, async () => {
 
-    const configRawContent = readFile("config.json", path.join(__dirname, "../"));
-    const config = JSON.parse(configRawContent);
+    const config = processObject.ctx.config;
 
-    await getTrickerPrice(spotClient, config.symbols, true, true);
+    await getTrickerPrice({
+      spotClient,
+      symbolList: config.symbols,
+      enableCheckNotice: true,
+      sendDingtalkMsg: true
+    });
   });
 }
 
 async function _scheduleCheckNet() {
-  const scheduleConfigRawContent = readFile(
-    "schedule.json",
-    path.join(__dirname, "../")
-  );
-  const scheduleConfig = JSON.parse(scheduleConfigRawContent);
+  const scheduleConfig = processObject.ctx.scheduleConfig;
 
   const checkNetInterval = scheduleConfig.check_net_interval;
 
@@ -72,11 +64,7 @@ async function _scheduleCheckNet() {
 }
 
 async function _scheduleCountStatus() {
-  const scheduleConfigRawContent = readFile(
-    "schedule.json",
-    path.join(__dirname, "../")
-  );
-  const scheduleConfig = JSON.parse(scheduleConfigRawContent);
+  const scheduleConfig = processObject.ctx.scheduleConfig;
 
   const countStatusInterval = scheduleConfig.count_status_interval;
 
