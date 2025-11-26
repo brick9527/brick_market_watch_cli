@@ -11,6 +11,8 @@ services:
       - ./notice.json:/usr/src/app/notice.json
       - ./schedule.json:/usr/src/app/schedule.json
       - ./logs:/usr/src/app/logs
+      - ./ignore_err.json:/usr/src/app/ignore_err.json
+      - ./ignore_err_code.json:/usr/src/app/ignore_err_code.json
       - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
     environment:
       NODE_ENV: production
