@@ -16,7 +16,13 @@
   },
   "symbols": ["BTCUSDT"],
   "dingtalk": {
-    "webhook": "http://test.com",
-    "secret": "my_secret"
+    "prod": {
+      "webhook": "http://test.com",
+      "secret": "my_secret"
+    },
+    "monitor": {
+      "webhook": "http://test.com",
+      "secret": "my_secret"
+    }
   }
 }

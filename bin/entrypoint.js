@@ -9,7 +9,7 @@ const nodeSchedule = require("node-schedule");
 const runCheckNet = require("./check_net");
 const { readFile } = require("../src/util/file");
 const logger = require("../src/util/log4js").getLogger("entrypoint");
-const dingtalkRobot = require("../src/util/dingtalk");
+const { monitorDingTalkRobot } = require("../src/util/dingtalk");
 const getClient = require("../src/util/binance_spot_client");
 const getProxyConfig = require("../src/libs/get_proxy");
 const { getTrickerPrice } = require("../src/controller/watch/index");
@@ -158,7 +158,7 @@ async function _scheduleCountStatus() {
       dayjs().hour() >= _.first(countStatusTimerange) &&
       dayjs().hour() <= _.last(countStatusTimerange)
     ) {
-      await dingtalkRobot.sendText(msgContent);
+      await monitorDingTalkRobot.sendText(msgContent);
     }
   });
 }

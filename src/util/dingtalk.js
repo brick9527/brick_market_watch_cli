@@ -1,8 +1,8 @@
-const axios = require('axios');
-const crypto = require('crypto'); // Node.js 内置加密模块，无需安装
+const axios = require("axios");
+const crypto = require("crypto"); // Node.js 内置加密模块，无需安装
 
-const config = require('../../config.json');
-const logger = require('./log4js').getLogger('dingtalk');
+const config = require("../../config.json");
+const logger = require("./log4js").getLogger("dingtalk");
 
 class DingTalkRobot {
   /**
@@ -20,7 +20,7 @@ class DingTalkRobot {
    * 参考钉钉官方签名逻辑：https://open.dingtalk.com/document/group/custom-robot-access
    */
   _calculateSignature() {
-    if (!this.secret) return ''; // 未加签则返回空
+    if (!this.secret) return ""; // 未加签则返回空
 
     const timestamp = Date.now().toString(); // 毫秒级时间戳
     // const nonce = Math.random().toString(36).substring(2, 10); // 8位随机字符串
@@ -30,8 +30,8 @@ class DingTalkRobot {
     const stringToSign = `${timestamp}\n${this.secret}`;
 
     // 2. HMAC-SHA256 加密 → Base64 编码 → URL 编码
-    const hmac = crypto.createHmac('sha256', this.secret);
-    const sign = encodeURIComponent(hmac.update(stringToSign).digest('base64'));
+    const hmac = crypto.createHmac("sha256", this.secret);
+    const sign = encodeURIComponent(hmac.update(stringToSign).digest("base64"));
 
     // 返回拼接后的 URL 参数（timestamp + nonce + sign）
     return `&timestamp=${timestamp}&sign=${sign}`;
@@ -49,19 +49,19 @@ class DingTalkRobot {
 
       // 发送 POST 请求（Content-Type 必须是 application/json）
       const response = await axios.post(requestUrl, msg, {
-        headers: { 'Content-Type': 'application/json;charset=utf-8' }
+        headers: { "Content-Type": "application/json;charset=utf-8" },
       });
 
       const result = response.data;
       if (result.errcode === 0) {
-        logger.info('钉钉消息发送成功：', result.errmsg);
+        logger.info("钉钉消息发送成功：", result.errmsg);
       } else {
-        logger.error('钉钉消息发送失败：', result);
+        logger.error("钉钉消息发送失败：", result);
       }
       return result;
     } catch (error) {
-      logger.error('钉钉消息请求异常：', error.message);
-      return { errcode: -1, errmsg: '请求失败', error: error.message };
+      logger.error("钉钉消息请求异常：", error.message);
+      return { errcode: -1, errmsg: "请求失败", error: error.message };
     }
   }
 
@@ -73,9 +73,9 @@ class DingTalkRobot {
    */
   async sendText(content, atMobiles = [], isAtAll = false) {
     const msg = {
-      msgtype: 'text',
+      msgtype: "text",
       text: { content },
-      at: { atMobiles, isAtAll }
+      at: { atMobiles, isAtAll },
     };
     return this._send(msg);
   }
@@ -89,53 +89,21 @@ class DingTalkRobot {
    */
   async sendMarkdown(title, text, atMobiles = [], isAtAll = false) {
     const msg = {
-      msgtype: 'markdown',
+      msgtype: "markdown",
       markdown: { title, text },
-      at: { atMobiles, isAtAll }
+      at: { atMobiles, isAtAll },
     };
     return this._send(msg);
   }
 }
 
-module.exports = new DingTalkRobot(config.dingtalk.webhook, config.dingtalk.secret);
-
-/*
-// ------------------- 测试使用（替换为你的配置）-------------------
-async function testDingTalk() {
-  // 1. 替换为你的机器人配置
-  const WEBHOOK = 'https://oapi.dingtalk.com/robot/send?access_token=xxx'; // 你的 WebHook
-  const SECRET = 'SECxxx'; // 你的加签密钥（未加签则传 undefined）
-
-  // 2. 初始化机器人
-  const robot = new DingTalkRobot(WEBHOOK, SECRET);
-
-  // 3. 发送文本消息（示例：@指定人）
-  logger.info('发送文本消息...');
-  await robot.sendText(
-    '【系统告警】服务器 CPU 使用率已达 92%！',
-    ['138xxxx1234', '139xxxx5678'], // 需要@的手机号
-    false // 是否@所有人（true/false）
-  );
-
-  // 4. 发送 Markdown 消息（示例：带排版和链接）
-  logger.info('\n发送 Markdown 消息...');
-  const markdownContent = `### 【接口监控报告】
-> 接口名称：/api/order/pay  
-> 响应时间：450ms（阈值：200ms）  
-> 错误率：2.1%（阈值：0.5%）  
-> 监控时间：${new Date().toLocaleString()}  
-
-[点击查看详细日志](https://xxx.com/logs/20251121)  
-@138xxxx1234`; // Markdown 中@人需手动写手机号
-
-  await robot.sendMarkdown(
-    '接口异常告警', // 消息标题
-    markdownContent,
-    ['138xxxx1234'], // 配合@人（可选，与文本中@一致）
-    false
-  );
-}
-
-// 执行测试
-testDingTalk().catch(logger.error);
-*/
+module.exports = module.exports = {
+  prodDingTalkRobot: new DingTalkRobot(
+    config.dingtalk.prod.webhook,
+    config.dingtalk.prod.secret
+  ),
+  monitorDingTalkRobot: new DingTalkRobot(
+    config.dingtalk?.monitor?.webhook || config.dingtalk.prod.webhook,
+    config.dingtalk?.monitor?.secret || config.dingtalk.prod.secret
+  ),
+};

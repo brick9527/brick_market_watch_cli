@@ -2,7 +2,7 @@ const dayjs = require("dayjs");
 const _ = require('lodash');
 
 const { checkSymbolNotice } = require("../../libs/check_notice");
-const dingtalkRobot = require("../../util/dingtalk");
+const { prodDingTalkRobot } = require("../../util/dingtalk");
 const logger = require('../../util/log4js').getLogger('watch');
 
 async function _allSettledResultFormatter(resultList, symbolList) {
@@ -113,13 +113,8 @@ async function getTrickerPrice(
     logger.info('[debug] ', msgContent);
 
     if (hasNoticeMsg) {
-      await dingtalkRobot.sendText(msgContent);
+      await prodDingTalkRobot.sendText(msgContent);
     }
-    // await dingtalkRobot.sendText(
-    // '【系统告警】服务器 CPU 使用率已达 92%！',
-    // ['138xxxx1234', '139xxxx5678'], // 需要@的手机号
-    // false // 是否@所有人（true/false）
-  // );
   }
 }
 
