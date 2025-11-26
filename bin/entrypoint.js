@@ -40,7 +40,6 @@ async function _scheduleWatch(spotClient) {
     const config = processObject.ctx.config;
 
     await getTrickerPrice({
-      spotClient,
       symbolList: config.symbols,
       enableCheckNotice: true,
       sendDingtalkMsg: true

@@ -1,20 +1,20 @@
+const dayjs = require("dayjs");
 const _ = require("lodash");
-const path = require("path");
 
-const { readFile, writeFile } = require("../util/file");
-const logger = require('../util/log4js').getLogger('check_notice');
+const { logger } = process.brickMarketWatchCli.ctx;
+const variables = process.brickMarketWatchCli.variables;
 
 function checkSymbolNotice(symbol, price) {
   const noticeMsg = {
     warningMsg: [],
     infoMsg: [],
   };
+
+  // 把所有要通知的币对存入 readyToNoticeSymbolList中
+  // 完成通知后 readyToNoticeSymbolList -> hasNoticeSymbolList
+  const readyToNoticeSymbolList = [];
   
-  const configRawContent = readFile(
-    "notice.json",
-    path.join(__dirname, "../../")
-  );
-  const config = JSON.parse(configRawContent);
+  const config = process.brickMarketWatchCli.ctx.config;
 
   const symbolPriceWarningTargetList = _.get(
     config,
@@ -38,6 +38,17 @@ function checkSymbolNotice(symbol, price) {
       throw new Error(`warningTargetPriceNum or priceNum is NaN`);
     }
 
+    const noticeSymbolName = `warning_${symbol}_${warningTargetItem.price}`;
+    const noticeSymbolInfo = variables.disableNoticeSymbolSet[noticeSymbolName];
+    if (noticeSymbolInfo
+      && Object.keys(variables.disableNoticeSymbolSet).includes(noticeSymbolName)
+      && dayjs(noticeSymbolInfo.expireTime).isBefore(dayjs())
+    ) {
+      // 已经存在被封禁的了, 检查封禁时间
+      logger.debug(`${noticeSymbolName} 在封禁期. startTime = ${noticeSymbolInfo.startTime}, expireTime = ${noticeSymbolInfo.expireTime}`)
+      continue;
+    }
+
     if (warningTargetPriceNum >= priceNum) {
       // 触发warning
       if (!isWarningExist) {
@@ -49,6 +60,7 @@ function checkSymbolNotice(symbol, price) {
       logger.info(warningMsgContent);
 
       noticeMsg.warningMsg.push(warningMsgContent);
+      readyToNoticeSymbolList.push();
     }
   }
 
@@ -66,6 +78,17 @@ function checkSymbolNotice(symbol, price) {
       throw new Error(`infoTargetPriceNum or priceNum is NaN`);
     }
 
+    const noticeSymbolName = `info_${symbol}_${infoTargetItem.price}`;
+    const noticeSymbolInfo = variables.disableNoticeSymbolSet[noticeSymbolName];
+    if (noticeSymbolInfo
+      && Object.keys(variables.disableNoticeSymbolSet).includes(noticeSymbolName)
+      && dayjs(noticeSymbolInfo.expireTime).isBefore(dayjs())
+    ) {
+      // 已经存在被封禁的了, 检查封禁时间
+      logger.debug(`${noticeSymbolName} 在封禁期. startTime = ${noticeSymbolInfo.startTime}, expireTime = ${noticeSymbolInfo.expireTime}`)
+      continue;
+    }
+
     if (infoTargetPriceNum <= priceNum) {
       // 触发info
       if (!isInfoExist) {
@@ -77,10 +100,14 @@ function checkSymbolNotice(symbol, price) {
       logger.info(infoMsgContent);
 
       noticeMsg.infoMsg.push(infoMsgContent);
+      readyToNoticeSymbolList.push(`info_${symbol}_${infoTargetItem.price}`);
     }
   }
 
-  return noticeMsg;
+  return {
+    noticeMsg,
+    readyToNoticeSymbolList,
+  };
 }
 
 module.exports = {

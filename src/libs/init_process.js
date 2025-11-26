@@ -8,6 +8,10 @@ const { prodDingTalkRobot, monitorDingTalkRobot } = require("../util/dingtalk");
 const getProxyConfig = require("./get_proxy");
 const getSpotClient = require("../util/binance_spot_client");
 
+const NO_NOTIFY_ERR = [
+  'Request failed after 3 retries',
+];
+
 function initProcess(process, processName = "default") {
   logger.debug("开始初始化进程数据...");
 
@@ -31,7 +35,9 @@ function initProcess(process, processName = "default") {
     },
 
     // 变量
-    variables: {},
+    variables: {
+      disableNoticeSymbolSet: {},
+    },
   };
 
   // 1. 捕获同步/回调异步中的未捕获错误
@@ -51,10 +57,9 @@ function initProcess(process, processName = "default") {
   // 2. 捕获 Promise 未处理的拒绝（最容易遗漏的场景）
   process.on("unhandledRejection", (reason, promise) => {
     process.brickMarketWatchCli.ctx.logger.error("未处理的 Promise 拒绝：");
-    process.brickMarketWatchCli.ctx.logger.error(
-      "拒绝原因：",
-      reason instanceof Error ? reason.message : reason
-    );
+
+    const errReason = reason instanceof Error ? reason.message : reason;
+    process.brickMarketWatchCli.ctx.logger.error( "拒绝原因：", errReason);
     process.brickMarketWatchCli.ctx.logger.error("关联的 Promise：", promise);
     process.brickMarketWatchCli.ctx.logger.error("错误堆栈：", reason instanceof Error ? reason.stack : "无");
 
@@ -62,6 +67,7 @@ function initProcess(process, processName = "default") {
     // cleanUpResources().then(() => {
     //   process.exit(1);
     // });
+
   });
 
   logger.info("初始化进程数据完成");

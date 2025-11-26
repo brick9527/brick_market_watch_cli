@@ -2,8 +2,7 @@ const dayjs = require("dayjs");
 const _ = require('lodash');
 
 const { checkSymbolNotice } = require("../../libs/check_notice");
-const { prodDingTalkRobot } = require("../../util/dingtalk");
-const logger = require('../../util/log4js').getLogger('watch');
+const { logger, noticeConfig } = process.brickMarketWatchCli.ctx;
 
 async function _allSettledResultFormatter(resultList, symbolList) {
   const result = [];
@@ -28,9 +27,9 @@ async function _allSettledResultFormatter(resultList, symbolList) {
   return result;
 }
 
-async function getSymbolAvgPrice(spotClient, symbolList = [], enableCheckNotice = false) {
+async function getSymbolAvgPrice(symbolList = [], enableCheckNotice = false) {
   const requestInstanceList = symbolList.map((symbolItem) => {
-    return spotClient.restAPI.avgPrice({ symbol: symbolItem });
+    return process.brickMarketWatchCli.ctx.spotClient.restAPI.avgPrice({ symbol: symbolItem });
   });
 
   let resultList = [];
@@ -42,8 +41,8 @@ async function getSymbolAvgPrice(spotClient, symbolList = [], enableCheckNotice 
 
   const result = await _allSettledResultFormatter(resultList, symbolList);
 
-  logger.info("=============avgPrice=============");
-  logger.info(result);
+  logger.debug("=============avgPrice=============");
+  logger.debug(result);
 
   // 检查告警
   if (enableCheckNotice) {
@@ -59,32 +58,45 @@ async function getSymbolAvgPrice(spotClient, symbolList = [], enableCheckNotice 
 }
 
 async function getTrickerPrice({
-  spotClient,
   symbolList = [],
   enableCheckNotice = false,
   sendDingtalkMsg = false
 }) {
   const closeLocalTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
-  const result = await spotClient.restAPI.tickerPrice({ symbols: symbolList });
+  const result = await process.brickMarketWatchCli.ctx.spotClient.restAPI.tickerPrice({ symbols: symbolList });
 
-  logger.info("=============tickerPrice=============");
+  logger.debug("=============tickerPrice=============");
 
   const data = await result.data();
-  logger.info({
+  /**
+   * data = [
+   *   { symbol: 'BTCUSDT', price: '87066.01000000' }
+   * ]
+   */
+  logger.debug({
     data,
     closeLocalTime,
   });
 
   // 检查告警
   const noticeGroup = {};
+  let disableNoticeSymbolSet = {};
+  const currentTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
   if (enableCheckNotice) {
     for (const dataItem of data) {
-      const noticeMsg = checkSymbolNotice(dataItem.symbol, dataItem.price);
+      const { noticeMsg, readyToNoticeSymbolList } = checkSymbolNotice(dataItem.symbol, dataItem.price);
       noticeGroup[dataItem.symbol] = noticeMsg || null;
+
+      for (const readyToNoticeSymbolItem of readyToNoticeSymbolList) {
+        disableNoticeSymbolSet[readyToNoticeSymbolItem] = {
+          startTime: currentTime,
+          expireTime: dayjs(currentTime).add(noticeConfig.expire, 'min').format('YYYY-MM-DD HH:mm:ss'),
+        };
+      }
     }
   }
 
-  logger.info('[debug] ', JSON.stringify(noticeGroup));
+  logger.debug(JSON.stringify(noticeGroup));
 
   if (sendDingtalkMsg) {
     let hasNoticeMsg = false;
@@ -110,10 +122,14 @@ async function getTrickerPrice({
       msgContent += '\n--------------------------\n';
     }
 
-    logger.info('[debug] ', msgContent);
+    logger.debug( msgContent);
 
     if (hasNoticeMsg) {
-      await prodDingTalkRobot.sendText(msgContent);
+      await process.brickMarketWatchCli.ctx.dingtalk.prodDingTalkRobot.sendText(msgContent);
+      process.brickMarketWatchCli.variables.disableNoticeSymbolSet = {
+        ...process.brickMarketWatchCli.variables.disableNoticeSymbolSet,
+        ...disableNoticeSymbolSet,
+      };
     }
   }
 }
