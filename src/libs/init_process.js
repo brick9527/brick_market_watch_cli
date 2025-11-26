@@ -8,6 +8,9 @@ const { prodDingTalkRobot, monitorDingTalkRobot } = require("../util/dingtalk");
 const getProxyConfig = require("./get_proxy");
 const getSpotClient = require("../util/binance_spot_client");
 
+const IGNORE_ERR = require('../../ignore_err.json');
+const IGNORE_ERR_CODE = require('../../ignore_err_code.json');
+
 const NO_NOTIFY_ERR = [
   'Request failed after 3 retries',
 ];
@@ -42,31 +45,38 @@ function initProcess(process, processName = "default") {
 
   // 1. 捕获同步/回调异步中的未捕获错误
   process.on("uncaughtException", (error) => {
-    process.brickMarketWatchCli.ctx.logger.error("未捕获的同步/回调异步错误：");
-    process.brickMarketWatchCli.ctx.logger.error("错误信息：", error.message);
-    process.brickMarketWatchCli.ctx.logger.error("错误堆栈：", error.stack); // 关键：打印堆栈，方便定位代码
-    process.brickMarketWatchCli.ctx.logger.error("错误码：", error.code); // 错误标识（如 ETIMEDOUT、ECONNREFUSED）
+    let msg = '未捕获的同步/回调异步错误：\n';
+    msg += `错误信息：${error.message}\n`;
+    msg += `错误堆栈：${error.stack}\n`;
+    msg += `错误码：${error.code}\n`; // 错误标识（如 ETIMEDOUT、ECONNREFUSED）
+    
+    process.brickMarketWatchCli.ctx.logger.error(msg);
 
-    // // 重要：触发 uncaughtException 后，进程状态可能不稳定，建议做清理工作后退出
-    // // 例如：关闭数据库连接、释放文件句柄
-    // cleanUpResources().then(() => {
-    //   process.exit(1); // 非 0 退出码表示异常退出（方便监控告警）
-    // });
+    if (!IGNORE_ERR_CODE.includes(error.code)) {
+      monitorDingTalkRobot.sendText(`${process.brickMarketWatchCli.name}\n ${msg}`);
+    }
   });
 
   // 2. 捕获 Promise 未处理的拒绝（最容易遗漏的场景）
   process.on("unhandledRejection", (reason, promise) => {
-    process.brickMarketWatchCli.ctx.logger.error("未处理的 Promise 拒绝：");
+    let msg = '未处理的 Promise 拒绝：\n';
 
     const errReason = reason instanceof Error ? reason.message : reason;
-    process.brickMarketWatchCli.ctx.logger.error( "拒绝原因：", errReason);
-    process.brickMarketWatchCli.ctx.logger.error("关联的 Promise：", promise);
-    process.brickMarketWatchCli.ctx.logger.error("错误堆栈：", reason instanceof Error ? reason.stack : "无");
+    msg += `拒绝原因：${errReason}\n`;
+    msg += `关联的 Promise：${promise}\n`;
+    msg += `错误堆栈：${reason instanceof Error ? reason.stack : '无'}\n`;
+
+    process.brickMarketWatchCli.ctx.logger.error(msg);
 
     // // 处理建议：同样做清理工作，避免内存泄漏或资源占用
     // cleanUpResources().then(() => {
     //   process.exit(1);
     // });
+
+    // 发送钉钉通知
+    if (!IGNORE_ERR.includes(errReason)) {
+      monitorDingTalkRobot.sendText(`${process.brickMarketWatchCli.name}\n ${msg}`);
+    }
 
   });
 
