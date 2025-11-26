@@ -4,6 +4,8 @@ ENV NODE_ENV=production
 WORKDIR /usr/src/app
 COPY ["bin", "./bin"]
 COPY ["src", "./src"]
+COPY ignore_err.json ignore_err.json
+COPY ignore_err_code.json ignore_err_code.json
 COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install --production --silent --registry=https://registry.npmmirror.com
 COPY config.sample.json config.json
