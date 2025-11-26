@@ -19,11 +19,9 @@
   "type": "commonjs",
   "main": "src/index.js",
   "scripts": {
-    "test": "test",
     "checknet": "node bin/check_net.js",
     "watch": "node bin/watch.js",
     "getaccount": "node bin/get_account.js",
-    "schedule": "node bin/schedule.js",
     "start": "node bin/entrypoint.js"
   },
   "dependencies": {

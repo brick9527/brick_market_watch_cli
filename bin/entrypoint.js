@@ -6,13 +6,13 @@ const _ = require("lodash");
 const path = require("path");
 const nodeSchedule = require("node-schedule");
 
-const runSchedule = require("./schedule");
 const runCheckNet = require("./check_net");
 const { readFile } = require("../src/util/file");
 const logger = require("../src/util/log4js").getLogger("entrypoint");
 const dingtalkRobot = require("../src/util/dingtalk");
 const getClient = require("../src/util/binance_spot_client");
 const getProxyConfig = require("../src/libs/get_proxy");
+const { getTrickerPrice } = require("../src/controller/watch/index");
 
 const proxyConfig = getProxyConfig();
 const spotClient = getClient(proxyConfig);
@@ -31,7 +31,25 @@ async function entrypoint() {
   await runCheckNet(spotClient);
 
   // 盯盘
-  await runSchedule(spotClient);
+  await _scheduleWatch(spotClient);
+}
+
+async function _scheduleWatch(spotClient) {
+  const scheduleConfigRawContent = readFile(
+    "schedule.json",
+    path.join(__dirname, "../")
+  );
+  const scheduleConfig = JSON.parse(scheduleConfigRawContent);
+
+  const interval = scheduleConfig.interval;
+
+  nodeSchedule.scheduleJob(interval, async () => {
+
+    const configRawContent = readFile("config.json", path.join(__dirname, "../"));
+    const config = JSON.parse(configRawContent);
+
+    await getTrickerPrice(spotClient, config.symbols, true, true);
+  });
 }
 
 async function _scheduleCheckNet() {
@@ -147,7 +165,7 @@ async function _scheduleCountStatus() {
 
 // 1. 捕获同步/回调异步中的未捕获错误
 process.on('uncaughtException', (error) => {
-  logger.error('🚨 未捕获的同步/回调异步错误：');
+  logger.error('未捕获的同步/回调异步错误：');
   logger.error('错误信息：', error.message);
   logger.error('错误堆栈：', error.stack); // 关键：打印堆栈，方便定位代码
   logger.error('错误码：', error.code); // 错误标识（如 ETIMEDOUT、ECONNREFUSED）
@@ -161,7 +179,7 @@ process.on('uncaughtException', (error) => {
 
 // 2. 捕获 Promise 未处理的拒绝（最容易遗漏的场景）
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error('🚨 未处理的 Promise 拒绝：');
+  logger.error('未处理的 Promise 拒绝：');
   logger.error('拒绝原因：', reason instanceof Error ? reason.message : reason);
   logger.error('关联的 Promise：', promise);
   logger.error('错误堆栈：', reason instanceof Error ? reason.stack : '无');
