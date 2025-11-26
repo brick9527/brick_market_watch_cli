@@ -4,15 +4,19 @@ const { getSymbolAvgPrice, getTrickerPrice } = require('../src/controller/watch/
 
 const config = require('../config.json');
 
-async function run() {
-  // await getSymbolAvgPrice(config.symbols);
+async function run(spotClient) {
+  // await getSymbolAvgPrice(spotClient, config.symbols);
 
-  await getTrickerPrice(config.symbols, true, true);
+  await getTrickerPrice(spotClient, config.symbols, true, true);
 }
 
 
 if (require.main === module) {
-  run();
+  const getClient = require('../src/util/binance_spot_client');
+  const getProxyConfig = require('../src/libs/get_proxy');
+  const proxyConfig = getProxyConfig();
+  const spotClient = getClient(proxyConfig);
+  run(spotClient);
 }
 
 module.exports = run;

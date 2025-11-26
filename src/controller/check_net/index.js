@@ -17,17 +17,16 @@ const logger = require("../../util/log4js").getLogger("checknet");
  * @param {Array<String>} urls - 检查的url列表
  * @param {Object} proxy - 代理配置
  */
-async function checkNet() {
+async function checkNet(proxyConfig) {
   const ipdb = new IPDB(qqwryIPDB);
 
   const IPInfoList = [];
   const urls = config.check_net.urls || [];
-  const proxy = config.proxy;
 
   for (let i = 0; i < urls.length; i++) {
     const urlConfig = urls[i];
 
-    const ip = await checkSingleNet(urlConfig, proxy);
+    const ip = await checkSingleNet(urlConfig, proxyConfig);
     const ipInfo = ipdb.find(ip);
     IPInfoList.push({ ip, ...ipInfo.data });
   }
@@ -41,11 +40,8 @@ async function checkSingleNet(urlConfig, proxyConfig) {
   const result = await axios({
     method: urlConfig.method,
     url: urlConfig.url,
-    proxy: {
-      protocol: proxyConfig.protocol,
-      host: proxyConfig.host,
-      port: proxyConfig.port,
-    },
+    ...proxyConfig,
+    timeout: 20000
   });
 
   return result.data;

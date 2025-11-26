@@ -1,7 +1,4 @@
-const spotClient = require("../../util/binance_spot_client");
-const logger = require('../../util/log4js').getLogger('checkbn');
-
-async function checkBn() {
+async function checkBn(spotClient) {
   const response = await spotClient.restAPI.ping();
   // logger.debug(response);
 

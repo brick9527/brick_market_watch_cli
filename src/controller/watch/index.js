@@ -1,7 +1,6 @@
 const dayjs = require("dayjs");
 const _ = require('lodash');
 
-const spotClient = require("../../util/binance_spot_client");
 const { checkSymbolNotice } = require("../../libs/check_notice");
 const dingtalkRobot = require("../../util/dingtalk");
 const logger = require('../../util/log4js').getLogger('watch');
@@ -29,7 +28,7 @@ async function _allSettledResultFormatter(resultList, symbolList) {
   return result;
 }
 
-async function getSymbolAvgPrice(symbolList = [], enableCheckNotice = false) {
+async function getSymbolAvgPrice(spotClient, symbolList = [], enableCheckNotice = false) {
   const requestInstanceList = symbolList.map((symbolItem) => {
     return spotClient.restAPI.avgPrice({ symbol: symbolItem });
   });
@@ -60,6 +59,7 @@ async function getSymbolAvgPrice(symbolList = [], enableCheckNotice = false) {
 }
 
 async function getTrickerPrice(
+  spotClient,
   symbolList = [],
   enableCheckNotice = false,
   sendDingtalkMsg = false
