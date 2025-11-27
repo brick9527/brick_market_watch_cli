@@ -16,6 +16,11 @@ const NO_NOTIFY_ERR = [
 ];
 
 function initProcess(process, processName = "default") {
+  if (process.brickMarketWatchCli) {
+    logger.warn(`已经初始化process：${process.brickMarketWatchCli.name}, 跳过本次初始化`);
+    return;
+  }
+  
   logger.debug("开始初始化进程数据...");
 
   const proxyConfig = getProxyConfig();

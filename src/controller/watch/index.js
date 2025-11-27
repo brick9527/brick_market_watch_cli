@@ -84,8 +84,10 @@ async function getTrickerPrice({
   const currentTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
   if (enableCheckNotice) {
     for (const dataItem of data) {
-      const { noticeMsg, readyToNoticeSymbolList } = checkSymbolNotice(dataItem.symbol, dataItem.price);
-      noticeGroup[dataItem.symbol] = noticeMsg || null;
+      const checkResult = checkSymbolNotice(dataItem.symbol, dataItem.price);
+      // { noticeMsg, readyToNoticeSymbolList }
+      noticeGroup[dataItem.symbol] = checkResult?.noticeMsg || null;
+      const readyToNoticeSymbolList = checkResult?.readyToNoticeSymbolList || [];
 
       for (const readyToNoticeSymbolItem of readyToNoticeSymbolList) {
         disableNoticeSymbolSet[readyToNoticeSymbolItem] = {
