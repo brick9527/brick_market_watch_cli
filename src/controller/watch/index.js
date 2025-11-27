@@ -41,8 +41,8 @@ async function getSymbolAvgPrice(symbolList = [], enableCheckNotice = false) {
 
   const result = await _allSettledResultFormatter(resultList, symbolList);
 
-  logger.debug("=============avgPrice=============");
-  logger.debug(result);
+  logger.info("=============avgPrice=============");
+  logger.info(result);
 
   // 检查告警
   if (enableCheckNotice) {
@@ -65,7 +65,7 @@ async function getTrickerPrice({
   const closeLocalTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
   const result = await process.brickMarketWatchCli.ctx.spotClient.restAPI.tickerPrice({ symbols: symbolList });
 
-  logger.debug("=============tickerPrice=============");
+  logger.info("=============tickerPrice=============");
 
   const data = await result.data();
   /**
@@ -73,7 +73,7 @@ async function getTrickerPrice({
    *   { symbol: 'BTCUSDT', price: '87066.01000000' }
    * ]
    */
-  logger.debug({
+  logger.info({
     data,
     closeLocalTime,
   });

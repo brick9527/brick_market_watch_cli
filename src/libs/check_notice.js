@@ -45,7 +45,7 @@ function checkSymbolNotice(symbol, price) {
       && dayjs(noticeSymbolInfo.expireTime).isBefore(dayjs())
     ) {
       // 已经存在被封禁的了, 检查封禁时间
-      logger.debug(`${noticeSymbolName} 在封禁期. startTime = ${noticeSymbolInfo.startTime}, expireTime = ${noticeSymbolInfo.expireTime}`)
+      logger.warn(`${noticeSymbolName} 在封禁期. startTime = ${noticeSymbolInfo.startTime}, expireTime = ${noticeSymbolInfo.expireTime}`)
       continue;
     }
 
@@ -85,7 +85,7 @@ function checkSymbolNotice(symbol, price) {
       && dayjs(noticeSymbolInfo.expireTime).isBefore(dayjs())
     ) {
       // 已经存在被封禁的了, 检查封禁时间
-      logger.debug(`${noticeSymbolName} 在封禁期. startTime = ${noticeSymbolInfo.startTime}, expireTime = ${noticeSymbolInfo.expireTime}`)
+      logger.warn(`${noticeSymbolName} 在封禁期. startTime = ${noticeSymbolInfo.startTime}, expireTime = ${noticeSymbolInfo.expireTime}`)
       continue;
     }
 
