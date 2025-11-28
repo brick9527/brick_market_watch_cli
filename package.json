@@ -22,7 +22,8 @@
     "checknet": "node bin/check_net.js",
     "watch": "node bin/watch.js",
     "getaccount": "node bin/get_account.js",
-    "start": "node bin/entrypoint.js"
+    "start": "node bin/entrypoint.js",
+    "lint": "eslint src/ bin/ eslint.config.mjs README.md ignore_err_code.json ignore_err.json"
   },
   "dependencies": {
     "@binance/spot": "^24.0.0",
@@ -34,5 +35,13 @@
     "log4js": "^6.9.1",
     "node-schedule": "^2.1.1",
     "qqwry.ipdb": "^2025.11.19"
+  },
+  "devDependencies": {
+    "@eslint/css": "^0.14.1",
+    "@eslint/js": "^9.39.1",
+    "@eslint/json": "^0.14.0",
+    "@eslint/markdown": "^7.5.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0"
   }
 }

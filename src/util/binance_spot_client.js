@@ -1,6 +1,6 @@
-const { Spot, SPOT_REST_API_PROD_URL } = require("@binance/spot");
+const { Spot, SPOT_REST_API_PROD_URL } = require('@binance/spot');
 
-const config = require("../../config.json");
+const config = require('../../config.json');
 
 function getClient (proxyConfig) {
   const configurationRestAPI = {

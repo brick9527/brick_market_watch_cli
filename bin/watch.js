@@ -1,10 +1,9 @@
 require('dotenv').config();
 require('../src/libs/init_process')(process, 'watch');
 
-const { getSymbolAvgPrice, getTrickerPrice } = require('../src/controller/watch/index');
+const { getTrickerPrice } = require('../src/controller/watch/index');
 
-async function run(spotClient) {
-  // await getSymbolAvgPrice(config.symbols);
+async function run() {
 
   await getTrickerPrice({
     symbolList: process.brickMarketWatchCli.ctx.config.symbols,

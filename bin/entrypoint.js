@@ -1,12 +1,12 @@
-require("dotenv").config();
+require('dotenv').config();
 require('../src/libs/init_process')(process, 'entrypoint');
 
-const dayjs = require("dayjs");
-const _ = require("lodash");
-const nodeSchedule = require("node-schedule");
+const dayjs = require('dayjs');
+const _ = require('lodash');
+const nodeSchedule = require('node-schedule');
 
-const runCheckNet = require("./check_net");
-const { getTrickerPrice } = require("../src/controller/watch/index");
+const runCheckNet = require('./check_net');
+const { getTrickerPrice } = require('../src/controller/watch/index');
 
 const processObject = process.brickMarketWatchCli;
 const logger = processObject.ctx.logger;
@@ -30,7 +30,7 @@ async function entrypoint() {
   await _scheduleWatch(spotClient);
 }
 
-async function _scheduleWatch(spotClient) {
+async function _scheduleWatch() {
   const scheduleConfig = processObject.ctx.scheduleConfig;
 
   const interval = scheduleConfig.interval;
@@ -57,7 +57,7 @@ async function _scheduleCheckNet() {
 
     processCache.push({
       ...checkResult,
-      timestamp: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     });
   });
 }
@@ -111,27 +111,27 @@ async function _scheduleCountStatus() {
     // 最后一次代理信息
     const latestIpInfo = _.last(processCache);
     if (!latestIpInfo) {
-      logger.warn("没有缓存数据，跳过本次消息发送");
+      logger.warn('没有缓存数据，跳过本次消息发送');
       return;
     }
 
-    let msgContent = `【巡检信息】<${dayjs().format("YYYY-MM-DD HH:mm:ss")}>\n`;
+    let msgContent = `【巡检信息】<${dayjs().format('YYYY-MM-DD HH:mm:ss')}>\n`;
     msgContent += `时间段：[${_.first(processCache)?.timestamp}, ${
       _.last(processCache)?.timestamp
     }]\n`;
-    msgContent += "# 代理检测\n";
+    msgContent += '# 代理检测\n';
     msgContent += `  成功率: ${proxySuccessRate} % (tcp连接)\n`;
     msgContent += `  最后一次代理状态: ${
-      latestIpInfo.isProxyExist ? "存在" : "不存在"
+      latestIpInfo.isProxyExist ? '存在' : '不存在'
     }\n`;
-    msgContent += "# ping检测\n";
+    msgContent += '# ping检测\n';
     msgContent += `  成功率: ${pingSuccessRate} % (ping方法)\n`;
     msgContent += `  最后一次ping结果: ${
-      latestIpInfo.pingStatus ? "成功" : "失败"
+      latestIpInfo.pingStatus ? '成功' : '失败'
     }\n`;
-    msgContent += "# 最近一次网络信息\n";
+    msgContent += '# 最近一次网络信息\n';
     msgContent += `  ${JSON.stringify(
-      _.get(latestIpInfo, "IPInfoList", []),
+      _.get(latestIpInfo, 'IPInfoList', []),
       null,
       2
     )} \n`;

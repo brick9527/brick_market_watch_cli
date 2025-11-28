@@ -1,8 +1,8 @@
-const axios = require("axios");
-const crypto = require("crypto"); // Node.js 内置加密模块，无需安装
+const axios = require('axios');
+const crypto = require('crypto'); // Node.js 内置加密模块，无需安装
 
-const config = require("../../config.json");
-const logger = require("./log4js").getLogger("dingtalk");
+const config = require('../../config.json');
+const logger = require('./log4js').getLogger('dingtalk');
 
 class DingTalkRobot {
   /**
@@ -20,7 +20,7 @@ class DingTalkRobot {
    * 参考钉钉官方签名逻辑：https://open.dingtalk.com/document/group/custom-robot-access
    */
   _calculateSignature() {
-    if (!this.secret) return ""; // 未加签则返回空
+    if (!this.secret) return ''; // 未加签则返回空
 
     const timestamp = Date.now().toString(); // 毫秒级时间戳
     // const nonce = Math.random().toString(36).substring(2, 10); // 8位随机字符串
@@ -30,8 +30,8 @@ class DingTalkRobot {
     const stringToSign = `${timestamp}\n${this.secret}`;
 
     // 2. HMAC-SHA256 加密 → Base64 编码 → URL 编码
-    const hmac = crypto.createHmac("sha256", this.secret);
-    const sign = encodeURIComponent(hmac.update(stringToSign).digest("base64"));
+    const hmac = crypto.createHmac('sha256', this.secret);
+    const sign = encodeURIComponent(hmac.update(stringToSign).digest('base64'));
 
     // 返回拼接后的 URL 参数（timestamp + nonce + sign）
     return `&timestamp=${timestamp}&sign=${sign}`;
@@ -49,19 +49,19 @@ class DingTalkRobot {
 
       // 发送 POST 请求（Content-Type 必须是 application/json）
       const response = await axios.post(requestUrl, msg, {
-        headers: { "Content-Type": "application/json;charset=utf-8" },
+        headers: { 'Content-Type': 'application/json;charset=utf-8' },
       });
 
       const result = response.data;
       if (result.errcode === 0) {
-        logger.info("钉钉消息发送成功：", result.errmsg);
+        logger.info('钉钉消息发送成功：', result.errmsg);
       } else {
-        logger.error("钉钉消息发送失败：", result);
+        logger.error('钉钉消息发送失败：', result);
       }
       return result;
     } catch (error) {
-      logger.error("钉钉消息请求异常：", error.message);
-      return { errcode: -1, errmsg: "请求失败", error: error.message };
+      logger.error('钉钉消息请求异常：', error.message);
+      return { errcode: -1, errmsg: '请求失败', error: error.message };
     }
   }
 
@@ -73,7 +73,7 @@ class DingTalkRobot {
    */
   async sendText(content, atMobiles = [], isAtAll = false) {
     const msg = {
-      msgtype: "text",
+      msgtype: 'text',
       text: { content },
       at: { atMobiles, isAtAll },
     };
@@ -89,7 +89,7 @@ class DingTalkRobot {
    */
   async sendMarkdown(title, text, atMobiles = [], isAtAll = false) {
     const msg = {
-      msgtype: "markdown",
+      msgtype: 'markdown',
       markdown: { title, text },
       at: { atMobiles, isAtAll },
     };

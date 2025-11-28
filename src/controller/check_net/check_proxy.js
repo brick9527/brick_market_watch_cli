@@ -8,11 +8,9 @@ function checkProxy(host, port, timeout = 5000) {
 
     // 创建 TCP 连接
     const socket = new net.Socket();
-    let isTimeout = false;
 
     // 超时处理
     const timeoutTimer = setTimeout(() => {
-      isTimeout = true;
       socket.destroy();
       resolve({
         success: false,

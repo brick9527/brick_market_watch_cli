@@ -1,5 +1,5 @@
-const dayjs = require("dayjs");
-const _ = require("lodash");
+const dayjs = require('dayjs');
+const _ = require('lodash');
 
 const { logger } = process.brickMarketWatchCli.ctx;
 const variables = process.brickMarketWatchCli.variables;
@@ -52,7 +52,7 @@ function checkSymbolNotice(symbol, price) {
     if (warningTargetPriceNum >= priceNum) {
       // 触发warning
       if (!isWarningExist) {
-        logger.info("=============warning=============");
+        logger.info('=============warning=============');
         isWarningExist = true;
       }
 
@@ -92,7 +92,7 @@ function checkSymbolNotice(symbol, price) {
     if (infoTargetPriceNum <= priceNum) {
       // 触发info
       if (!isInfoExist) {
-        logger.info("=============info=============");
+        logger.info('=============info=============');
         isInfoExist = true;
       }
 

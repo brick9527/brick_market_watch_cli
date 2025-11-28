@@ -1,7 +1,7 @@
-const dayjs = require("dayjs");
+const dayjs = require('dayjs');
 const _ = require('lodash');
 
-const { checkSymbolNotice } = require("../../libs/check_notice");
+const { checkSymbolNotice } = require('../../libs/check_notice');
 const { logger, noticeConfig } = process.brickMarketWatchCli.ctx;
 
 async function _allSettledResultFormatter(resultList, symbolList) {
@@ -9,11 +9,11 @@ async function _allSettledResultFormatter(resultList, symbolList) {
   for (let i = 0; i < resultList.length; i++) {
     const resultItem = resultList[i];
 
-    if (resultItem.status === "fulfilled") {
+    if (resultItem.status === 'fulfilled') {
       const data = await resultItem.value.data();
       data.status = resultItem.status;
       data.name = symbolList[i];
-      data.closeLocalTime = dayjs(data.closeTime).format("YYYY-MM-DD HH:mm:ss");
+      data.closeLocalTime = dayjs(data.closeTime).format('YYYY-MM-DD HH:mm:ss');
       result.push(data);
       continue;
     }
@@ -41,13 +41,13 @@ async function getSymbolAvgPrice(symbolList = [], enableCheckNotice = false) {
 
   const result = await _allSettledResultFormatter(resultList, symbolList);
 
-  logger.info("=============avgPrice=============");
+  logger.info('=============avgPrice=============');
   logger.info(result);
 
   // 检查告警
   if (enableCheckNotice) {
     for (const resultItem of result) {
-      if (resultItem.status !== "fulfilled") {
+      if (resultItem.status !== 'fulfilled') {
         continue;
       }
 
@@ -62,10 +62,10 @@ async function getTrickerPrice({
   enableCheckNotice = false,
   sendDingtalkMsg = false
 }) {
-  const closeLocalTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
+  const closeLocalTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
   const result = await process.brickMarketWatchCli.ctx.spotClient.restAPI.tickerPrice({ symbols: symbolList });
 
-  logger.info("=============tickerPrice=============");
+  logger.info('=============tickerPrice=============');
 
   const data = await result.data();
   /**

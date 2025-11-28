@@ -3,12 +3,12 @@
  * 检查使用对应代理之后，对应的代理的ip地址以及所属信息
  * （规避币安的地域限制）
  */
-const axios = require("axios");
-const IPDB = require("ipdb");
-const qqwryIPDB = require("qqwry.ipdb");
+const axios = require('axios');
+const IPDB = require('ipdb');
+const qqwryIPDB = require('qqwry.ipdb');
 
-const config = require("../../../config.json");
-const logger = require("../../util/log4js").getLogger("checknet");
+const config = require('../../../config.json');
+const logger = require('../../util/log4js').getLogger('checknet');
 
 /**
  * 检查网络

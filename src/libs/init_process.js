@@ -1,27 +1,23 @@
-const config = require("../../config.json");
-const noticeConfig = require("../../notice.json");
-const scheduleConfig = require("../../schedule.json");
+const config = require('../../config.json');
+const noticeConfig = require('../../notice.json');
+const scheduleConfig = require('../../schedule.json');
 
-const getLogger = require("../util/log4js").getLogger;
-const logger = getLogger("init_process");
-const { prodDingTalkRobot, monitorDingTalkRobot } = require("../util/dingtalk");
-const getProxyConfig = require("./get_proxy");
-const getSpotClient = require("../util/binance_spot_client");
+const getLogger = require('../util/log4js').getLogger;
+const logger = getLogger('init_process');
+const { prodDingTalkRobot, monitorDingTalkRobot } = require('../util/dingtalk');
+const getProxyConfig = require('./get_proxy');
+const getSpotClient = require('../util/binance_spot_client');
 
 const IGNORE_ERR = require('../../ignore_err.json');
 const IGNORE_ERR_CODE = require('../../ignore_err_code.json');
 
-const NO_NOTIFY_ERR = [
-  'Request failed after 3 retries',
-];
-
-function initProcess(process, processName = "default") {
+function initProcess(process, processName = 'default') {
   if (process.brickMarketWatchCli) {
     logger.warn(`已经初始化process：${process.brickMarketWatchCli.name}, 跳过本次初始化`);
     return;
   }
   
-  logger.debug("开始初始化进程数据...");
+  logger.debug('开始初始化进程数据...');
 
   const proxyConfig = getProxyConfig();
   process.brickMarketWatchCli = {
@@ -49,7 +45,7 @@ function initProcess(process, processName = "default") {
   };
 
   // 1. 捕获同步/回调异步中的未捕获错误
-  process.on("uncaughtException", (error) => {
+  process.on('uncaughtException', (error) => {
     let msg = '未捕获的同步/回调异步错误：\n';
     msg += `错误信息：${error.message}\n`;
     msg += `错误堆栈：${error.stack}\n`;
@@ -63,7 +59,7 @@ function initProcess(process, processName = "default") {
   });
 
   // 2. 捕获 Promise 未处理的拒绝（最容易遗漏的场景）
-  process.on("unhandledRejection", (reason, promise) => {
+  process.on('unhandledRejection', (reason, promise) => {
     let msg = '未处理的 Promise 拒绝：\n';
 
     const errReason = reason instanceof Error ? reason.message : reason;
@@ -85,7 +81,7 @@ function initProcess(process, processName = "default") {
 
   });
 
-  logger.info("初始化进程数据完成");
+  logger.info('初始化进程数据完成');
 }
 
 module.exports = initProcess;
