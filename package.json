@@ -17,10 +17,10 @@
   "license": "MIT",
   "author": "brick9527",
   "type": "commonjs",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "checknet": "node bin/check_net.js",
-    "watch": "node bin/watch.js",
+    "price": "node bin/get_current_price.js",
     "getaccount": "node bin/get_account.js",
     "start": "node bin/entrypoint.js",
     "lint": "eslint src/ bin/ eslint.config.mjs README.md ignore_err_code.json ignore_err.json"
@@ -33,6 +33,7 @@
     "ipdb": "^0.3.3",
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
+    "meow": "^9.0.0",
     "node-schedule": "^2.1.1",
     "qqwry.ipdb": "^2025.11.19"
   },

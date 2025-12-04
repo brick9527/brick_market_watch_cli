@@ -115,3 +115,4 @@ npm run watch
 - [ ] 1.4.0
   - [ ] ~~添加websocket支持~~
   - [x] 添加ESLint
+  - [x] 添加命令行相关功能

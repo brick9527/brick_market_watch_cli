@@ -8,7 +8,7 @@ const checkProxy = require('../src/controller/check_net/check_proxy');
 const logger = process.brickMarketWatchCli.ctx.logger;
 const proxyConfig = process.brickMarketWatchCli.ctx.proxyConfig;
 
-async function run() {
+async function runCheckNect() {
   const result = {
     IPInfoList: [],
     pingStatus: false,
@@ -57,7 +57,7 @@ async function run() {
 }
 
 if (require.main === module) {
-  run();
+  runCheckNect();
 }
 
-module.exports = run;
+module.exports = runCheckNect;
