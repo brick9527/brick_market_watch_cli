@@ -1,0 +1,213 @@
+{
+  "expire": 60,
+  "warning_target": {
+    "BTCUSDT": [
+      {
+        "enable": true,
+        "price": "85001",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "80000",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "70000",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      }
+    ],
+    "SOLUSDT": [
+      {
+        "enable": true,
+        "price": "125",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "100",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "50",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      }
+    ],
+    "BNBUSDT": [
+      {
+        "enable": true,
+        "price": "800",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "750",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "650",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      }
+    ],
+    "TRUMPUSDT": [
+      {
+        "enable": true,
+        "price": "5.5",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "4",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "1",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      }
+    ],
+    "WLFIUSDT": [
+      {
+        "enable": true,
+        "price": "0.1",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      },
+      {
+        "enable": true,
+        "price": "0.01",
+        "name": "deafult_warning",
+        "desc": "some thing"
+      }
+    ]
+  },
+  "info_target": {
+    "BTCUSDT": [
+      {
+        "enable": true,
+        "price": "98000",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "100000",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "115000",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "130000",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      }
+    ],
+    "SOLUSDT": [
+      {
+        "enable": true,
+        "price": "180",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "210",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "230",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "250",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      }
+    ],
+    "BNBUSDT": [
+      {
+        "enable": true,
+        "price": "950",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "1100",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "1300",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "1700",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      }
+    ],
+    "TRUMPUSDT": [
+      {
+        "enable": true,
+        "price": "7.5",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "8",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "9.5",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      }
+    ],
+    "WLFIUSDT": [
+      {
+        "enable": true,
+        "price": "0.25",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      },
+      {
+        "enable": true,
+        "price": "0.5",
+        "name": "deafult_info",
+        "desc": "some info thing"
+      }
+    ]
+  }
+}

@@ -118,5 +118,5 @@ npm run watch
   - [x] 添加命令行相关功能
   - [x] 添加获取notice目标功能
   - [ ] 添加获取JSON格式的notice目标功能
-  - [ ] 添加设置notice目标功能
+  - [x] 添加设置notice目标功能
   - [ ] 更新README.md文件说明

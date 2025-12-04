@@ -1,10 +1,18 @@
 require('dotenv').config();
-require('../src/libs/init_process')(process, 'getnoticetarget');
+require('../src/libs/init_process')(process, 'setnoticetarget');
 
+const logger = process.brickMarketWatchCli.ctx.logger;
+
+const setNoticeTarget = require('../src/controller/set_notice_info/set_notice_target');
 const getNoticeTarget = require('../src/controller/get_notice_info/get_notice_target');
 const generateNoticeTargetTable = require('../src/libs/table/notice_target');
 
-function runGetNoticeTarget() {
+
+function runSetNoticeTarget(noticeTargetConfig) {
+  setNoticeTarget(noticeTargetConfig);
+
+  logger.info('设置通知目标成功');
+
   const { warning_target, info_target } = getNoticeTarget();
 
   const tableObject = generateNoticeTargetTable({ warning_target, info_target });
@@ -12,7 +20,7 @@ function runGetNoticeTarget() {
 }
 
 if (require.main === module) {
-  runGetNoticeTarget();
+  runSetNoticeTarget();
 }
 
-module.exports = runGetNoticeTarget;
+module.exports = runSetNoticeTarget;

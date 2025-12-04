@@ -43,6 +43,13 @@ function main (inputCommand, options) {
     return;
   }
 
+  // setnoticetarget
+  if (inputCommand === 'setnoticetarget') {
+    const noticeTargetConfig = _checkConfig(options);
+    require('./bin/set_notice_target')(noticeTargetConfig);
+    return;
+  }
+
   // version
   if (inputCommand === 'version') {
     const packageInfo = require('./package.json');
@@ -62,6 +69,7 @@ const cli = meow(`
     getaccount        获取账户信息
     getprice          获取当前的价格
     getnoticetarget   获取通知信息
+    setnoticetarget   设置通知目标
     version           获取版本
     
 	Options
