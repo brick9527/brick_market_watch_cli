@@ -28,6 +28,7 @@
   "dependencies": {
     "@binance/spot": "^24.0.0",
     "axios": "^1.13.2",
+    "cli-table3": "^0.6.5",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
     "ipdb": "^0.3.3",

@@ -22,23 +22,35 @@ function main (inputCommand, options) {
   // getallorder
   if (inputCommand === 'checknet') {
     require('./bin/check_net')();
+    return;
   }
 
   // getaccount
   if (inputCommand === 'getaccount') {
     require('./bin/get_account')();
+    return;
   }
 
   // getprice
   if (inputCommand === 'getprice') {
     require('./bin/get_current_price')();
+    return;
+  }
+
+  // getnoticetarget
+  if (inputCommand === 'getnoticetarget') {
+    require('./bin/get_notice_target')();
+    return;
   }
 
   // version
   if (inputCommand === 'version') {
     const packageInfo = require('./package.json');
     console.log(`包名: ${packageInfo.name}\n版本: ${packageInfo.version}\n作者: ${packageInfo.author}\nhomepage: ${packageInfo.homepage}`);
+    return;
   }
+
+  console.log('未知的命令');
 }
 
 const cli = meow(`
@@ -46,13 +58,14 @@ const cli = meow(`
 	  $ bmwc <input> <option>
 
   Input
-    checknet      检查网络状态
-    getaccount    获取账户信息
-    getprice      获取当前的价格
-    version       获取版本
+    checknet          检查网络状态
+    getaccount        获取账户信息
+    getprice          获取当前的价格
+    getnoticetarget   获取通知信息
+    version           获取版本
     
 	Options
-	  --file, -f    指定配置文件
+	  --file, -f        指定配置文件
 
 	Examples
 	  $ bmwc getprice --file ./config.json
