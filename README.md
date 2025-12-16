@@ -31,11 +31,21 @@ cp config.sample.json config.json
 - apiKey: binance的apikey
 - apiSecret: binance的apiSecret
 - proxy: 本地代理相关配置
+  - protocol: 本地代理协议，如`http`
+  - host: 本地代理主机地址，如`127.0.0.1`
+  - port: 本地代理端口，如`7897`
 - check_net: 检查网络配置，*可以不做修改*
-- symbols: 要盯盘的币对
+  - urls: （Array<Object>）检查网络的url列表
+    - url: 要检查的url，如`https://ifconfig.me`
+    - method: 检查方法，如`get`
+- symbols: 要盯盘的币对列表，如`["BTCUSDT"]`     
 - dingtalk
-  - webhook: 钉钉机器人的webhook
-  - secret: 钉钉机器人的secret
+  - prod: 生产环境配置
+    - webhook: 钉钉机器人的webhook
+    - secret: 钉钉机器人的secret
+  - monitor: 监控环境配置（非必须）
+    - webhook: 钉钉机器人的webhook
+    - secret: 钉钉机器人的secret
 
 ### 2.2 notice.json
 
@@ -45,6 +55,7 @@ cp notice.sample.json notice.json
 
 `notice.json`配置描述
 
+- expire: warning信息禁止重复通知的时间（单位：分钟），默认`60`
 - warning_target: 告警信号监听
   - symbol: 要检测的币对名称，如`BTCUSDT`
     - warning_target.${symbol}.enable: 是否开启该指标检查
@@ -73,10 +84,10 @@ cp schedule.sample.json schedule.json
 
 ## 三、运行命令
 
-### 3.1 检查网络
+### 3.1 查看帮助
 
 ```sh
-npm run checknet
+bmwc --help
 ```
 
 ### 3.2 盯盘（单次）
@@ -84,8 +95,40 @@ npm run checknet
 **warning：现目前工具暂未开发定时盯盘，自行调用需要掌握频率**
 
 ```sh
-npm run watch
+bmwc getprice
 ```
+
+### 3.3 查看网络状态
+
+```sh
+bmwc checknet
+```
+
+### 3.4 获取账户信息
+
+```sh
+bmwc getaccount
+```
+
+### 3.5 获取通知信息
+
+```sh
+bmwc getnoticetarget
+```
+
+### 3.6 设置通知目标
+
+```sh
+bmwc setnoticetarget -f notice.json
+```
+
+### 3.7 获取版本信息
+
+```sh
+bmwc version
+```
+
+
 
 ## 四、milestone
 
@@ -117,6 +160,10 @@ npm run watch
   - [x] 添加ESLint
   - [x] 添加命令行相关功能
   - [x] 添加获取notice目标功能
-  - [ ] 添加获取JSON格式的notice目标功能
+  - [ ] ~~添加获取JSON格式的notice目标功能~~
   - [x] 添加设置notice目标功能
-  - [ ] 更新README.md文件说明
+  - [x] 更新README.md文件说明
+- [ ] 2.0.0
+  - [ ] 更换cli命令行工具
+  - [ ] 添加k线数据获取功能
+  - [ ] 添加获取JSON格式的notice目标功能
