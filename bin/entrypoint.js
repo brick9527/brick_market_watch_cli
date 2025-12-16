@@ -150,4 +150,8 @@ async function _scheduleCountStatus() {
   });
 }
 
-entrypoint();
+if (require.main === module) {
+  entrypoint();
+}
+
+module.exports = entrypoint;

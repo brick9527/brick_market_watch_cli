@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 'use strict';
-const meow = require('meow');
+
+const { Command } = require('commander');
 const path = require('path');
+const packageJson = require('./package.json');
+
+const program = new Command();
 
 function _checkConfig(options) {
   if (!options?.file) {
@@ -18,79 +22,52 @@ function _checkConfig(options) {
   return config;
 }
 
-function main (inputCommand, options) {
-  // getallorder
-  if (inputCommand === 'checknet') {
+program.name('bmwc')
+  .description('a market watch cli tool')
+  .version(packageJson.version);
+
+// checknet
+program.command('checknet')
+  .description('检查网络状态')
+  .action(() => {
     require('./bin/check_net')();
-    return;
-  }
+  });
 
-  // getaccount
-  if (inputCommand === 'getaccount') {
+// getaccount
+program.command('getaccount')
+  .description('获取账户信息')
+  .action(() => {
     require('./bin/get_account')();
-    return;
-  }
+  });
 
-  // getprice
-  if (inputCommand === 'getprice') {
+// getprice
+program.command('getprice')
+  .description('获取当前价格')
+  .action(() => {
     require('./bin/get_current_price')();
-    return;
-  }
+  });
 
-  // getnoticetarget
-  if (inputCommand === 'getnoticetarget') {
+// getnoticetarget
+program.command('getnoticetarget')
+  .description('获取告警目标')
+  .action(() => {
     require('./bin/get_notice_target')();
-    return;
-  }
+  });
 
-  // setnoticetarget
-  if (inputCommand === 'setnoticetarget') {
+// setnoticetarget
+program.command('setnoticetarget')
+  .description('设置告警目标')
+  .requiredOption('-f, --file <path>', '指定配置文件')
+  .action((options) => {
     const noticeTargetConfig = _checkConfig(options);
     require('./bin/set_notice_target')(noticeTargetConfig);
-    return;
-  }
+  });
 
-  // version
-  if (inputCommand === 'version') {
-    const packageInfo = require('./package.json');
-    console.log(`包名: ${packageInfo.name}\n版本: ${packageInfo.version}\n作者: ${packageInfo.author}\nhomepage: ${packageInfo.homepage}`);
-    return;
-  }
+// start
+program.command('start')
+  .description('启动监控')
+  .action(() => {
+    require('./bin/entrypoint')();
+  });
 
-  console.log('未知的命令');
-}
-
-const cli = meow(`
-	Usage
-	  $ bmwc <input> <option>
-
-  Input
-    checknet          检查网络状态
-    getaccount        获取账户信息
-    getprice          获取当前的价格
-    getnoticetarget   获取通知信息
-    setnoticetarget   设置通知目标
-    version           获取版本
-    
-	Options
-	  --file, -f        指定配置文件
-
-	Examples
-	  $ bmwc getprice --file ./config.json
-`, {
-	flags: {
-		file: {
-			type: 'string',
-			alias: 'f'
-		}
-	}
-});
-/*
-{
-	input: ['unicorns'],
-	flags: {rainbow: true},
-	...
-}
-*/
-
-main(cli.input[0], cli.flags);
+program.parse();

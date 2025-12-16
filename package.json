@@ -29,12 +29,12 @@
     "@binance/spot": "^24.0.0",
     "axios": "^1.13.2",
     "cli-table3": "^0.6.5",
+    "commander": "^14.0.2",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
     "ipdb": "^0.3.3",
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
-    "meow": "^9.0.0",
     "node-schedule": "^2.1.1",
     "qqwry.ipdb": "^2025.11.19"
   },

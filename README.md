@@ -164,6 +164,6 @@ bmwc version
   - [x] 添加设置notice目标功能
   - [x] 更新README.md文件说明
 - [ ] 2.0.0
-  - [ ] 更换cli命令行工具
+  - [x] 更换cli命令行工具
   - [ ] 添加k线数据获取功能
   - [ ] 添加获取JSON格式的notice目标功能
