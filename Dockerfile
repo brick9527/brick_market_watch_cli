@@ -2,6 +2,7 @@ FROM node:24.11.1-alpine
 
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
+COPY ["index.js", "index.js"]
 COPY ["bin", "./bin"]
 COPY ["src", "./src"]
 COPY ignore_err.json ignore_err.json
@@ -18,5 +19,7 @@ RUN mkdir -p logs/default \
   && chown -R node:node logs
 # COPY . .
 # RUN chown -R node /usr/src/app
+RUN chmod +x ./index.js
+RUN npm link
 USER node
 CMD ["npm", "run", "start"]
