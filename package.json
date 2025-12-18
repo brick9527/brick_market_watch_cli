@@ -1,6 +1,6 @@
 {
   "name": "brick_market_watch_cli",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A market watch cli tool",
   "bin": {
     "bwc": "./index.js",
