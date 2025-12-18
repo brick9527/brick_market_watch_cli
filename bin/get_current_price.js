@@ -1,9 +1,8 @@
-require('dotenv').config();
-require('../src/libs/init_process')(process, 'getcurrentprice');
-
 const { getTrickerPrice } = require('../src/controller/watch/index');
+const initProcess = require('../src/libs/init_process');
 
 async function getCurrentPrice() {
+  await initProcess(process, 'getcurrentprice');
 
   await getTrickerPrice({
     symbolList: process.brickMarketWatchCli.ctx.config.symbols,
@@ -13,7 +12,7 @@ async function getCurrentPrice() {
 }
 
 if (require.main === module) {
-  getCurrentPrice(process.brickMarketWatchCli.ctx.spotClient);
+  getCurrentPrice();
 }
 
 module.exports = getCurrentPrice;

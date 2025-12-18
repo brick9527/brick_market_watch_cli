@@ -16,7 +16,7 @@ services:
       - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
     environment:
       NODE_ENV: production
-    command: ["npm", "run", "schedule"]
+    command: ["npm", "run", "start"]
 # 网络配置定义
 networks:
   brickmarketwatch-network:

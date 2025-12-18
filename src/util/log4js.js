@@ -26,7 +26,7 @@ const logConfig = {
       layout: STDOUT_LAYOUT,
     },
 
-    // server-debug级别日志
+    // server-debug级别日志（log4js 6.x 的 dateFile 本身已经是异步的）
     debug: {
       type: 'dateFile',
       filename: getLogFilePath('debug'),
@@ -36,12 +36,10 @@ const logConfig = {
       backups: 3,
       compress: true,
       layout: FILE_LAYOUT,
-    },
-    debugFilter: {
-      type: 'logLevelFilter',
-      appender: 'debug',
-      level: 'debug',
-      maxLevel: 'debug',
+      // log4js 6.x 中，dateFile appender 默认使用异步写入
+      // 以下是可选的性能优化配置
+      encoding: 'utf-8', // 文件编码
+      mode: 0o644, // 文件权限
     },
 
     // server-info级别日志
@@ -55,12 +53,6 @@ const logConfig = {
       compress: true,
       layout: FILE_LAYOUT,
     },
-    infoFilter: {
-      type: 'logLevelFilter',
-      appender: 'info',
-      level: 'info',
-      maxLevel: 'info',
-    },
 
     // server-warn级别日志
     warn: {
@@ -72,12 +64,6 @@ const logConfig = {
       backups: 3,
       compress: true,
       layout: FILE_LAYOUT,
-    },
-    warnFilter: {
-      type: 'logLevelFilter',
-      appender: 'warn',
-      level: 'warn',
-      maxLevel: 'warn',
     },
 
     // server-error级别日志
@@ -91,17 +77,11 @@ const logConfig = {
       compress: true,
       layout: FILE_LAYOUT,
     },
-    errorFilter: {
-      type: 'logLevelFilter',
-      appender: 'error',
-      level: 'error',
-      maxLevel: 'fatal',
-    },
   },
 
   categories: {
     default: {
-      appenders: ['stdout', 'debugFilter', 'infoFilter', 'warnFilter', 'errorFilter'],
+      appenders: ['stdout', 'debug', 'info', 'warn', 'error'],
       level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
     },
   },
