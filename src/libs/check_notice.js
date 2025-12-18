@@ -1,10 +1,10 @@
 const dayjs = require('dayjs');
 const _ = require('lodash');
 
-const { logger, noticeConfig } = process.brickMarketWatchCli.ctx;
-const variables = process.brickMarketWatchCli.variables;
-
 function checkSymbolNotice(symbol, price) {
+  const { logger, noticeConfig } = process.brickMarketWatchCli.ctx;
+  const variables = process.brickMarketWatchCli.variables;
+
   const noticeMsg = {
     warningMsg: [],
     infoMsg: [],

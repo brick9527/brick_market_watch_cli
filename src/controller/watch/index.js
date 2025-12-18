@@ -2,7 +2,6 @@ const dayjs = require('dayjs');
 const _ = require('lodash');
 
 const { checkSymbolNotice } = require('../../libs/check_notice');
-const { logger, noticeConfig } = process.brickMarketWatchCli.ctx;
 
 async function _allSettledResultFormatter(resultList, symbolList) {
   const result = [];
@@ -28,6 +27,8 @@ async function _allSettledResultFormatter(resultList, symbolList) {
 }
 
 async function getSymbolAvgPrice(symbolList = [], enableCheckNotice = false) {
+  const { logger } = process.brickMarketWatchCli.ctx;
+
   const requestInstanceList = symbolList.map((symbolItem) => {
     return process.brickMarketWatchCli.ctx.spotClient.restAPI.avgPrice({ symbol: symbolItem });
   });
@@ -62,6 +63,8 @@ async function getTrickerPrice({
   enableCheckNotice = false,
   sendDingtalkMsg = false
 }) {
+  const { logger, noticeConfig } = process.brickMarketWatchCli.ctx;
+
   const closeLocalTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
   const result = await process.brickMarketWatchCli.ctx.spotClient.restAPI.tickerPrice({ symbols: symbolList });
 
