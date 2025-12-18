@@ -1,10 +1,12 @@
 require('dotenv').config();
-require('../src/libs/init_process')(process, 'getnoticetarget');
 
 const getNoticeTarget = require('../src/controller/get_notice_info/get_notice_target');
 const generateNoticeTargetTable = require('../src/libs/table/notice_target');
+const initProcess = require('../src/libs/init_process');
 
-function runGetNoticeTarget(enableJSON = false) {
+async function runGetNoticeTarget(enableJSON = false) {
+  await initProcess(process, 'getnoticetarget');
+
   const { warning_target, info_target } = getNoticeTarget();
 
   if (enableJSON) {

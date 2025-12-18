@@ -7,19 +7,22 @@ const logger = getLogger('init_process');
 const { prodDingTalkRobot, monitorDingTalkRobot } = require('../util/dingtalk');
 const getProxyConfig = require('./get_proxy');
 const getSpotClient = require('../util/binance_spot_client');
+const connectMongoDB = require('../util/mongoose');
 
 const IGNORE_ERR = require('../../ignore_err.json');
 const IGNORE_ERR_CODE = require('../../ignore_err_code.json');
 
-function initProcess(process, processName = 'default') {
+async function initProcess(process, processName = 'default', { initMongoDB = false } = {}) {
   if (process.brickMarketWatchCli) {
     logger.warn(`已经初始化process：${process.brickMarketWatchCli.name}, 跳过本次初始化`);
     return;
   }
   
   logger.debug('开始初始化进程数据...');
+  logger.info(`初始化进程模式：${process.env.NODE_ENV}`);
 
   const proxyConfig = getProxyConfig();
+
   process.brickMarketWatchCli = {
     // 进程名称
     name: processName,
@@ -36,6 +39,7 @@ function initProcess(process, processName = 'default') {
         monitorDingTalkRobot,
       },
       spotClient: getSpotClient(proxyConfig),
+      mongoClient: null,
     },
 
     // 变量
@@ -81,7 +85,13 @@ function initProcess(process, processName = 'default') {
 
   });
 
+  if (initMongoDB) {
+    process.brickMarketWatchCli.ctx.mongoClient = await connectMongoDB(config.database);
+  }
+
   logger.info('初始化进程数据完成');
+
+  return process;
 }
 
 module.exports = initProcess;

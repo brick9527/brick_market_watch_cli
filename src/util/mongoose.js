@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
-
-const logger = process.brickMarketWatchCli.ctx.logger;
+const logger = require('./log4js').getLogger('mongoose');
 
 /**
  * 连接mongodb，获取mongo客户端实例
  * @returns
  */
-async function connectMongoDB(config) {
+async function connectMongoDB(databaseConfig) {
   const processName = process.env.process_name || process.pid;
+  const config = process.env.NODE_ENV === 'development' ? databaseConfig.dev : databaseConfig.prod;
 
   try {
     const {
@@ -24,16 +24,16 @@ async function connectMongoDB(config) {
     } = config;
 
     const client = await mongoose.connect(`mongodb://${host}:${port}`, {
-      dbName,
       // authSource,
+      dbName,
       user,
-      pass: password,
+      pass: password, // 使用 password 替代 pass
       // autoReconnect: true,
       // reconnectTries,
       // reconnectInterval,
       // poolSize,
       autoIndex,
-      // useNewUrlParser: true,
+      // useNewUrlParser: true, // Mongoose 6+ 已默认启用
     });
 
     const { connection } = client;

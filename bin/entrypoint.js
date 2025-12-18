@@ -1,5 +1,5 @@
 require('dotenv').config();
-require('../src/libs/init_process')(process, 'entrypoint');
+require('../src/libs/init_process')();
 
 const dayjs = require('dayjs');
 const _ = require('lodash');
@@ -7,16 +7,16 @@ const nodeSchedule = require('node-schedule');
 
 const runCheckNet = require('./check_net');
 const { getTrickerPrice } = require('../src/controller/watch/index');
-
-const processObject = process.brickMarketWatchCli;
-const logger = processObject.ctx.logger;
-const monitorDingTalkRobot = processObject.ctx.dingtalk.monitorDingTalkRobot;
-const spotClient = processObject.ctx.spotClient;
+const initProcess = require('../src/libs/init_process');
 
 // 先存到内存中，保留最新的20条记录
 let processCache = [];
 
 async function entrypoint() {
+  await initProcess(process, 'entrypoint', { initMongoDB: true });
+
+  const { spotClient } = process.brickMarketWatchCli.ctx;
+
   // TODO: 检查代理连接状态，如果无法连接，则不使用代理创建spotClient
   
   // 注册轮询
@@ -31,13 +31,10 @@ async function entrypoint() {
 }
 
 async function _scheduleWatch() {
-  const scheduleConfig = processObject.ctx.scheduleConfig;
-
+  const { scheduleConfig, config } = process.brickMarketWatchCli.ctx;
   const interval = scheduleConfig.interval;
 
   nodeSchedule.scheduleJob(interval, async () => {
-
-    const config = processObject.ctx.config;
 
     await getTrickerPrice({
       symbolList: config.symbols,
@@ -48,7 +45,7 @@ async function _scheduleWatch() {
 }
 
 async function _scheduleCheckNet() {
-  const scheduleConfig = processObject.ctx.scheduleConfig;
+  const { scheduleConfig, spotClient } = process.brickMarketWatchCli.ctx;
 
   const checkNetInterval = scheduleConfig.check_net_interval;
 
@@ -63,8 +60,8 @@ async function _scheduleCheckNet() {
 }
 
 async function _scheduleCountStatus() {
-  const scheduleConfig = processObject.ctx.scheduleConfig;
-
+  const { scheduleConfig, logger } = process.brickMarketWatchCli.ctx;
+  const { monitorDingTalkRobot } = process.brickMarketWatchCli.ctx.dingtalk;
   const countStatusInterval = scheduleConfig.count_status_interval;
 
   nodeSchedule.scheduleJob(countStatusInterval, async () => {
