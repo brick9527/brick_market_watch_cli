@@ -40,6 +40,7 @@
     "ipdb": "^0.3.3",
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
+    "mongoose": "^9.0.1",
     "node-schedule": "^2.1.1",
     "qqwry.ipdb": "^2025.11.19"
   },

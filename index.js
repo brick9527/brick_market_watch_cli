@@ -50,8 +50,9 @@ program.command('getprice')
 // getnoticetarget
 program.command('getnoticetarget')
   .description('获取告警目标')
-  .action(() => {
-    require('./bin/get_notice_target')();
+  .option('--json', '以JSON格式输出')
+  .action((options) => {
+    require('./bin/get_notice_target')(options.json);
   });
 
 // setnoticetarget
