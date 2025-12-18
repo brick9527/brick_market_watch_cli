@@ -1,6 +1,3 @@
-require('dotenv').config();
-require('../src/libs/init_process')();
-
 const dayjs = require('dayjs');
 const _ = require('lodash');
 const nodeSchedule = require('node-schedule');

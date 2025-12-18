@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const logger = process.brickMarketWatchCli.ctx.logger;
 
 const setNoticeTarget = require('../src/controller/set_notice_info/set_notice_target');

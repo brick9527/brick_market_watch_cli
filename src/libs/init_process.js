@@ -1,3 +1,5 @@
+require('dotenv').config({ quiet: true });
+
 const config = require('../../config.json');
 const noticeConfig = require('../../notice.json');
 const scheduleConfig = require('../../schedule.json');
@@ -19,6 +21,7 @@ async function initProcess(process, processName = 'default', { initMongoDB = fal
   }
   
   logger.debug('开始初始化进程数据...');
+
   logger.info(`初始化进程模式：${process.env.NODE_ENV}`);
 
   const proxyConfig = getProxyConfig();

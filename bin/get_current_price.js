@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const { getTrickerPrice } = require('../src/controller/watch/index');
 const initProcess = require('../src/libs/init_process');
 

@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const getAccount = require('../src/controller/get_account/index');
 const initProcess = require('../src/libs/init_process');
 

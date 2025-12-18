@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const getNoticeTarget = require('../src/controller/get_notice_info/get_notice_target');
 const generateNoticeTargetTable = require('../src/libs/table/notice_target');
 const initProcess = require('../src/libs/init_process');

@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const checkNet = require('../src/controller/check_net/index');
 const checkBn = require('../src/controller/check_net/check_bn');
 const checkProxy = require('../src/controller/check_net/check_proxy');
