@@ -13,7 +13,7 @@ async function getCurrentPrice() {
 }
 
 if (require.main === module) {
-  getCurrentPrice(process.brickMarketWatchCli.ctx.spotClient);
+  getCurrentPrice();
 }
 
 module.exports = getCurrentPrice;

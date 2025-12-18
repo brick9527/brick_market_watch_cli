@@ -98,7 +98,7 @@ async function getTrickerPrice({
     }
   }
 
-  logger.debug(JSON.stringify(noticeGroup));
+  logger.debug(`noticeGroup: ${JSON.stringify(noticeGroup)}`);
 
   if (sendDingtalkMsg) {
     let hasNoticeMsg = false;

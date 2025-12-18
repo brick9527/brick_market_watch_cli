@@ -1,7 +1,7 @@
 const dayjs = require('dayjs');
 const _ = require('lodash');
 
-const { logger } = process.brickMarketWatchCli.ctx;
+const { logger, noticeConfig } = process.brickMarketWatchCli.ctx;
 const variables = process.brickMarketWatchCli.variables;
 
 function checkSymbolNotice(symbol, price) {
@@ -14,24 +14,19 @@ function checkSymbolNotice(symbol, price) {
   // 完成通知后 readyToNoticeSymbolList -> hasNoticeSymbolList
   const readyToNoticeSymbolList = [];
   
-  const config = process.brickMarketWatchCli.ctx.config;
-
-  const symbolPriceWarningTargetList = _.get(
-    config,
-    `warning_target.${symbol}`,
-    []
-  );
+  // #region 检查warning_target
+  const symbolPriceWarningTargetList = _.get(noticeConfig, `warning_target.${symbol}`, []);
 
   if (symbolPriceWarningTargetList.length === 0) {
     return;
   }
 
-  const enableWarningTargetList = symbolPriceWarningTargetList.filter(
-    (item) => item.enable
-  );
-
   let isWarningExist = false;
-  for (const warningTargetItem of enableWarningTargetList) {
+  for (const warningTargetItem of symbolPriceWarningTargetList) {
+    if (!warningTargetItem.enable) {
+      continue;
+    }
+
     const warningTargetPriceNum = Number(warningTargetItem.price);
     const priceNum = Number(price);
     if (Number.isNaN(warningTargetPriceNum) || Number.isNaN(priceNum)) {
@@ -52,7 +47,6 @@ function checkSymbolNotice(symbol, price) {
     if (warningTargetPriceNum >= priceNum) {
       // 触发warning
       if (!isWarningExist) {
-        logger.info('=============warning=============');
         isWarningExist = true;
       }
 
@@ -60,18 +54,20 @@ function checkSymbolNotice(symbol, price) {
       logger.info(warningMsgContent);
 
       noticeMsg.warningMsg.push(warningMsgContent);
-      readyToNoticeSymbolList.push();
+      readyToNoticeSymbolList.push(noticeSymbolName);
     }
   }
+  // #endregion 检查warning_target
 
-  const symbolPriceInfoTargetList = _.get(config, `info_target.${symbol}`, []);
-
-  const enableInfoTargetList = symbolPriceInfoTargetList.filter(
-    (item) => item.enable
-  );
+  // #region 检查info_target
+  const symbolPriceInfoTargetList = _.get(noticeConfig, `info_target.${symbol}`, []);
 
   let isInfoExist = false;
-  for (const infoTargetItem of enableInfoTargetList) {
+  for (const infoTargetItem of symbolPriceInfoTargetList) {
+    if (!infoTargetItem.enable) {
+      continue;
+    }
+
     const infoTargetPriceNum = Number(infoTargetItem.price);
     const priceNum = Number(price);
     if (Number.isNaN(infoTargetPriceNum) || Number.isNaN(priceNum)) {
@@ -92,7 +88,6 @@ function checkSymbolNotice(symbol, price) {
     if (infoTargetPriceNum <= priceNum) {
       // 触发info
       if (!isInfoExist) {
-        logger.info('=============info=============');
         isInfoExist = true;
       }
 
@@ -100,9 +95,10 @@ function checkSymbolNotice(symbol, price) {
       logger.info(infoMsgContent);
 
       noticeMsg.infoMsg.push(infoMsgContent);
-      readyToNoticeSymbolList.push(`info_${symbol}_${infoTargetItem.price}`);
+      readyToNoticeSymbolList.push(noticeSymbolName);
     }
   }
+  // #endregion 检查info_target
 
   return {
     noticeMsg,
