@@ -61,6 +61,7 @@ class DingTalkRobot {
       return result;
     } catch (error) {
       logger.error('钉钉消息请求异常：', error.message);
+      logger.error(error);
       return { errcode: -1, errmsg: '请求失败', error: error.message };
     }
   }
@@ -99,8 +100,12 @@ class DingTalkRobot {
 
 module.exports = module.exports = {
   prodDingTalkRobot: new DingTalkRobot(
-    config.dingtalk.prod.webhook,
-    config.dingtalk.prod.secret
+    process.env.NODE_ENV === 'development' ? 
+      (config.dingtalk?.monitor?.webhook || config.dingtalk.prod.webhook) : 
+      config.dingtalk.prod.webhook,
+    process.env.NODE_ENV === 'development' ?
+      (config.dingtalk?.monitor?.secret || config.dingtalk.prod.secret) :
+      config.dingtalk.prod.secret,
   ),
   monitorDingTalkRobot: new DingTalkRobot(
     config.dingtalk?.monitor?.webhook || config.dingtalk.prod.webhook,
