@@ -21,10 +21,10 @@ class BrickProcess {
   // 进程中的关键变量
   _brickMarketWatchCli = {
     name: null,
+
     // 上下文
     ctx: {},
-    // 变量
-    variables: {},
+    
     // 连接器
     connector: {},
   };
@@ -57,11 +57,6 @@ class BrickProcess {
         mongoClient: null,
       },
 
-      // 变量
-      variables: {
-        // 禁用告警的交易对集合
-        disableNoticeSymbolSet: {},
-      },
       // 连接器
       connector: {
         connectMongoDB,

@@ -1,27 +1,4 @@
-const dayjs = require('dayjs');
 const _ = require('lodash');
-
-function _checkNoticeExpire({ noticeSymbolName }) {
-  const { logger } = process.brickMarketWatchCli.ctx;
-  const { variables } = process.brickMarketWatchCli;
-
-  // 获取该告警标识的抑制信息
-  const noticeSymbolInfo = variables?.disableNoticeSymbolSet[noticeSymbolName];
-  logger.debug(`noticeSymbolName = ${noticeSymbolName}\n noticeSymbolInfo = ${JSON.stringify(noticeSymbolInfo)}`);
-  
-  // 检查是否处于告警抑制期
-  if (noticeSymbolInfo && dayjs(noticeSymbolInfo.expireTime).isAfter(dayjs())) {
-    // 该告警处于抑制期，跳过
-    logger.warn(`${noticeSymbolName} 在封禁期. startTime = ${noticeSymbolInfo.startTime}, expireTime = ${noticeSymbolInfo.expireTime}`)
-    return {
-      isExpire: false,
-    };
-  }
-  
-  return {
-    isExpire: true,
-  };
-}
 
 /**
  * 检查加密货币交易对是否触发警告级别告警条件
@@ -34,7 +11,7 @@ function _checkNoticeExpire({ noticeSymbolName }) {
  * @returns {Object} 警告级别检查结果
  * @returns {boolean} return.status - 检查是否成功执行（有配置且无严重错误）
  * @returns {Array<string>} return.warningMsg - 生成的警告级告警消息列表
- * @returns {Array<string>} return.readyToNoticeSymbolList - 待发送告警的交易对标识列表
+ * @returns {Array<Object>} return.warningList - 存储警告级别的告警目标
  * 
  * @description
  * 该函数负责：
@@ -50,7 +27,7 @@ function _checkWarningTarget({ symbol, price }) {
   
   // 初始化警告消息数组和待通知列表
   const warningMsg = [];
-  const readyToNoticeSymbolList = [];
+  const warningList = [];
 
   // 获取该交易对的所有警告级别告警目标配置
   const symbolPriceWarningTargetList = _.get(noticeConfig, `warning_target.${symbol}`, []);
@@ -83,30 +60,19 @@ function _checkWarningTarget({ symbol, price }) {
     }
     
     // 构建警告级告警消息内容
-    const warningMsgContent = `【warning】${symbol} 突破 ${warningTargetItem.price} ↓ 点位, 当前价格：${price}`;
+    const warningMsgContent = `【warning】${symbol} 突破 ${warningTargetItem.price} ↓ 点位, 当前价格：${price}, 附加信息: ${warningTargetItem.desc}`;
     logger.info(warningMsgContent);
-
-    // 生成告警标识（用于告警抑制检查和管理）
-    const noticeSymbolName = `warning_${symbol}_${warningTargetItem.price}`;
-    
-    // 检查告警是否处于抑制期
-    const { isExpire } = _checkNoticeExpire({ noticeSymbolName });
-
-    // 如果告警处于抑制期，跳过发送
-    if (!isExpire) {
-      continue;
-    }
 
     // 将告警消息和标识添加到对应列表中
     warningMsg.push(warningMsgContent);
-    readyToNoticeSymbolList.push(noticeSymbolName);
+    warningList.push(warningTargetItem);
   }
 
   // 返回警告级别检查结果
   return {
     status: true,
     warningMsg,
-    readyToNoticeSymbolList,
+    warningList,
   };
 }
 
@@ -121,7 +87,7 @@ function _checkWarningTarget({ symbol, price }) {
  * @returns {Object} 信息级别检查结果
  * @returns {boolean} return.status - 检查是否成功执行（有配置且无严重错误）
  * @returns {Array<string>} return.infoMsg - 生成的信息级告警消息列表
- * @returns {Array<string>} return.readyToNoticeSymbolList - 待发送告警的交易对标识列表
+ * @returns {Array<Object>} return.infoList - 存储信息级别的告警目标
  * 
  * @description
  * 该函数负责：
@@ -137,7 +103,7 @@ function _checkInfoTarget({ symbol, price }) {
   
   // 初始化信息消息数组和待通知列表
   const infoMsg = [];
-  const readyToNoticeSymbolList = [];
+  const infoList = [];
 
   // 获取该交易对的所有信息级别告警目标配置
   const symbolPriceInfoTargetList = _.get(noticeConfig, `info_target.${symbol}`, []);
@@ -169,30 +135,19 @@ function _checkInfoTarget({ symbol, price }) {
     }
 
     // 构建信息级告警消息内容
-    const infoMsgContent = `【info】${symbol} 突破 ${infoTargetItem.price} ↑ 点位, 当前价格：${price}`;
+    const infoMsgContent = `【info】${symbol} 突破 ${infoTargetItem.price} ↑ 点位, 当前价格：${price}, 附加信息: ${infoTargetItem.desc}`;
     logger.info(infoMsgContent);
-
-    // 生成告警标识（用于告警抑制检查和管理）
-    const noticeSymbolName = `info_${symbol}_${infoTargetItem.price}`;
-    
-    // 检查告警是否处于抑制期
-    const { isExpire } = _checkNoticeExpire({ noticeSymbolName });
-
-    // 如果告警处于抑制期，跳过发送
-    if (!isExpire) {
-      continue;
-    }
 
     // 将告警消息和标识添加到对应列表中
     infoMsg.push(infoMsgContent);
-    readyToNoticeSymbolList.push(noticeSymbolName);
+    infoList.push(infoTargetItem);
   }
 
   // 返回信息级别检查结果
   return {
     status: true,
     infoMsg,
-    readyToNoticeSymbolList,
+    infoList,
   };
 }
 
@@ -206,7 +161,9 @@ function _checkInfoTarget({ symbol, price }) {
  * @returns {Object} return.noticeMsg - 告警消息对象
  * @returns {Array<string>} return.noticeMsg.warningMsg - 警告级别的告警消息列表
  * @returns {Array<string>} return.noticeMsg.infoMsg - 信息级别的告警消息列表
- * @returns {Array<string>} return.readyToNoticeSymbolList - 待发送告警的交易对标识列表
+ * @returns {Object} return.noticeTargetList - 待通知交易对列表对象
+ * @returns {Array<Object>} return.noticeTargetList.warningList - 警告级别的告警目标列表
+ * @returns {Array<Object>} return.noticeTargetList.infoList - 信息级别的告警目标列表
  * 
  * @description
  * 该函数主要完成以下功能：
@@ -221,26 +178,39 @@ function checkSymbolNotice(symbol, price) {
     warningMsg: [],  // 存储警告级别的告警消息
     infoMsg: [],     // 存储信息级别的告警消息
   };
+  const noticeTargetList = {
+    warningList: [], // 存储警告级别的告警目标
+    infoList: [],    // 存储信息级别的告警目标
+  }
 
   // 存储待发送告警的交易对标识列表
   // 格式：warning_<symbol>_<price> 或 info_<symbol>_<price>
-  const readyToNoticeSymbolList = [];
-  const { status: warningCheckStatus, warningMsg, readyToNoticeSymbolList: warningReadyToNoticeSymbolList } = _checkWarningTarget({ symbol, price });
+  const {
+    status: warningCheckStatus,
+    warningMsg,
+    warningList,
+  } = _checkWarningTarget({ symbol, price });
+
   if (warningCheckStatus) {
     noticeMsg.warningMsg.push(...warningMsg);
-    readyToNoticeSymbolList.push(...warningReadyToNoticeSymbolList);
+    noticeTargetList.warningList.push(...warningList);
   }
 
-  const { status: infoCheckStatus, infoMsg, readyToNoticeSymbolList: infoReadyToNoticeSymbolList } = _checkInfoTarget({ symbol, price });
+  const {
+    status: infoCheckStatus,
+    infoMsg,
+    infoList,
+  } = _checkInfoTarget({ symbol, price });
+  
   if (infoCheckStatus) {
     noticeMsg.infoMsg.push(...infoMsg);
-    readyToNoticeSymbolList.push(...infoReadyToNoticeSymbolList);
+    noticeTargetList.infoList.push(...infoList);
   }
 
   // 返回告警消息和待通知交易对列表
   return {
     noticeMsg,
-    readyToNoticeSymbolList,
+    noticeTargetList,
   };
 }
 
