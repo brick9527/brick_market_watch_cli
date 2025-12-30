@@ -1,18 +1,28 @@
 const dayjs = require('dayjs');
 const path = require('path');
-const { SpotRestAPI } = require('@binance/spot');
-
 
 const getSingleUiklineData = require('./uikline/get_single_data');
+const seperateTask = require('./task/index');
 const { writeJson2CsvFile } = require('../../libs/csv');
 
 async function getKlineData({ symbolList, interval, startTime, endTime, outputFolder }) {
+  const { ctx } = process.brickMarketWatchCli;
+  const { logger } = ctx;
 
-  // await getUiklineData({ symbol, interval, startTime, endTime });
-  for (const symbol of symbolList) {
+  const taskList = await seperateTask({ symbolList, interval, startTime, endTime });
+  await writeJson2CsvFile({
+    jsonData: taskList,
+    filePath: path.join(outputFolder, `tasklist-${startTime}-${endTime}.csv`),
+  });
+
+  for (let i = 0; i < taskList.length; i++) {
+    logger.info(`开始获取第${i + 1} / ${taskList.length}个任务数据`);
+
+    const taskItem = taskList[i];
+    const { symbol, startTime, endTime, interval } = taskItem;
     const symbolKlineData = await getSingleUiklineData({
       symbol,
-      interval: SpotRestAPI.UiKlinesIntervalEnum.INTERVAL_5m,
+      interval,
       startTime: dayjs(startTime).valueOf(),
       endTime: dayjs(endTime).valueOf(),
     });

@@ -18,7 +18,7 @@ async function getKlineData({ symbol, interval, startTime, endTime }) {
   // 调用 Binance Spot API 获取指定交易对的 K 线数据
   const result = await spotClient.restAPI.uiKlines(condition);
 
-  logger.info('=============klines=============');
+  logger.debug('=============klines=============');
 
   // 解析 API 响应数据
   const data = await result.data();
@@ -43,7 +43,7 @@ async function getKlineData({ symbol, interval, startTime, endTime }) {
    */
   
   // 将价格数据和当前时间记录到日志
-  logger.info(`symbol: ${symbol}, interval: ${interval}, data: ${JSON.stringify(data)}`);
+  logger.debug(`symbol: ${symbol}, interval: ${interval}, data: ${JSON.stringify(data)}`);
 
   return data;
 }
