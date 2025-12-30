@@ -1,16 +1,18 @@
+const BrickProcess = require('../src/libs/init_process');
+const brickProcess = new BrickProcess(process, 'entrypoint');
+
 const dayjs = require('dayjs');
 const _ = require('lodash');
 const nodeSchedule = require('node-schedule');
 
 const runCheckNet = require('./check_net');
 const { getTrickerPrice } = require('../src/controller/watch/index');
-const initProcess = require('../src/libs/init_process');
 
 // 先存到内存中，保留最新的20条记录
 let processCache = [];
 
 async function entrypoint() {
-  await initProcess(process, 'entrypoint', { initMongoDB: true });
+  await brickProcess.createMongoClient();
 
   const { spotClient } = process.brickMarketWatchCli.ctx;
 

@@ -1,11 +1,12 @@
+const BrickProcess = require('../src/libs/init_process');
+new BrickProcess(process, 'getklinedata');
+
 const path = require('path');
 
-const initProcess = require('../src/libs/init_process');
 const getKlineData = require('../src/controller/kline');
 
 
 async function getKlineDataEntrance({ symbolList, interval, startTime, endTime, outputFolder }) {
-  await initProcess(process, 'getklinedata');
 
   let targetOutputFolder = outputFolder;
   if (!path.isAbsolute(outputFolder)) {

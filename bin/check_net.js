@@ -1,11 +1,11 @@
+const BrickProcess = require('../src/libs/init_process');
+new BrickProcess(process, 'checknet');
+
 const checkNet = require('../src/controller/check_net/index');
 const checkBn = require('../src/controller/check_net/check_bn');
 const checkProxy = require('../src/controller/check_net/check_proxy');
-const initProcess = require('../src/libs/init_process');
 
 async function runCheckNect() {
-  await initProcess(process, 'checknet');
-
   const logger = process.brickMarketWatchCli.ctx.logger;
   const proxyConfig = process.brickMarketWatchCli.ctx.proxyConfig;
 

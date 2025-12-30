@@ -1,8 +1,9 @@
+const BrickProcess = require('../src/libs/init_process');
+new BrickProcess(process, 'getcurrentprice');
+
 const { getTrickerPrice } = require('../src/controller/watch/index');
-const initProcess = require('../src/libs/init_process');
 
 async function getCurrentPrice() {
-  await initProcess(process, 'getcurrentprice');
 
   await getTrickerPrice({
     symbolList: process.brickMarketWatchCli.ctx.config.symbols,

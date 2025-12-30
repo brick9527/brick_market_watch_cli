@@ -1,9 +1,10 @@
+const BrickProcess = require('../src/libs/init_process');
+new BrickProcess(process, 'getnoticetarget');
+
 const getNoticeTarget = require('../src/controller/get_notice_info/get_notice_target');
 const generateNoticeTargetTable = require('../src/libs/table/notice_target');
-const initProcess = require('../src/libs/init_process');
 
 async function runGetNoticeTarget(enableJSON = false) {
-  await initProcess(process, 'getnoticetarget');
 
   const { warning_target, info_target } = getNoticeTarget();
 
