@@ -1,6 +1,6 @@
 const dayjs = require('dayjs');
 
-async function getUiklineData({ symbol, interval, startTime, endTime }) {
+async function getKlineData({ symbol, interval, startTime, endTime }) {
   const { ctx } = process.brickMarketWatchCli;
   const { logger, spotClient } = ctx;
 
@@ -16,7 +16,7 @@ async function getUiklineData({ symbol, interval, startTime, endTime }) {
   logger.debug(`condition = ${JSON.stringify(condition)}`);
 
   // 调用 Binance Spot API 获取指定交易对的 K 线数据
-  const result = await spotClient.restAPI.klines(condition);
+  const result = await spotClient.restAPI.uiKlines(condition);
 
   logger.info('=============klines=============');
 
@@ -48,4 +48,4 @@ async function getUiklineData({ symbol, interval, startTime, endTime }) {
   return data;
 }
 
-module.exports = getUiklineData;
+module.exports = getKlineData;
