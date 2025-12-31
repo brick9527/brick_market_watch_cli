@@ -1,6 +1,4 @@
-const _ = require('lodash');
-
-const saveNoticeConfig = require('../../DAO/save_notice_config');
+const saveNoticeConfig = require('../../libs/save_notice_config');
 
 // TODO: 后续这部分更新noticeConfig的操作交给数据库来更新
 function changeNoticeConfigEnable(triggerToCloseList = [], triggerToOpenList = []) {
@@ -14,6 +12,7 @@ function changeNoticeConfigEnable(triggerToCloseList = [], triggerToOpenList = [
    * }
    */
   const noticeConfig = process.brickMarketWatchCli.ctx.noticeConfig;
+  const noticeConfigEntry = process.brickMarketWatchCli.class.noticeConfig;
 
   const warningTargetGroup = noticeConfig.warning_target;
   const infoTargetGroup = noticeConfig.info_target;
@@ -26,11 +25,19 @@ function changeNoticeConfigEnable(triggerToCloseList = [], triggerToOpenList = [
       const warningTargetItem = warningTargetInfoList[i];
 
       if (triggerToCloseList.includes(warningTargetItem.name)) {
-        _.set(noticeConfig, `warning_target.${warningTargetKey}.${i}.enable`, false);
+        noticeConfigEntry.updateEnable({
+          type: 'warning_target',
+          propertyPath: `${warningTargetKey}.${i}.enable`,
+          enable: false,
+        });
       }
 
       if (triggerToOpenList.includes(warningTargetItem.name)) {
-        _.set(noticeConfig, `warning_target.${warningTargetKey}.${i}.enable`, true);
+        noticeConfigEntry.updateEnable({
+          type: 'warning_target',
+          propertyPath: `${warningTargetKey}.${i}.enable`,
+          enable: true,
+        });
       }
     }
   }
@@ -43,14 +50,24 @@ function changeNoticeConfigEnable(triggerToCloseList = [], triggerToOpenList = [
       const infoTargetItem = infoTargetInfoList[i];
       
       if (triggerToCloseList.includes(infoTargetItem.name)) {
-        _.set(noticeConfig, `info_target.${infoTargetKey}.${i}.enable`, false);
+        noticeConfigEntry.updateEnable({
+          type: 'info_target',
+          propertyPath: `${infoTargetKey}.${i}.enable`,
+          enable: false,
+        });
       }
 
       if (triggerToOpenList.includes(infoTargetItem.name)) {
-        _.set(noticeConfig, `info_target.${infoTargetKey}.${i}.enable`, true);
+        noticeConfigEntry.updateEnable({
+          type: 'info_target',
+          propertyPath: `${infoTargetKey}.${i}.enable`,
+          enable: true,
+        });
       }
     }
   }
+
+  process.brickMarketWatchCli.ctx.noticeConfig = noticeConfigEntry.getJSON();
 
   // 保存到配置文件
   saveNoticeConfig(noticeConfig);

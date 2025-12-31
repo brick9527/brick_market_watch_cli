@@ -2,32 +2,40 @@
   "warning_target": {
     "BTCUSDT": [
       {
+        "name": "btc_warning_85000",
         "enable": true,
         "price": "85000",
-        "name": "deafult_warning",
-        "desc": "some thing"
+        "desc": "some thing",
+        "triggerToClose": ["btc_warning_85000"],
+        "triggerToOpen": ["btc_info_110000", "btc_info_105000"]
       },
       {
+        "name": "btc_warning_83000",
         "enable": true,
         "price": "83000",
-        "name": "deafult_warning",
-        "desc": "some thing"
+        "desc": "some thing",
+        "triggerToClose": ["btc_warning_83000", "btc_warning_85000"],
+        "triggerToOpen": ["btc_info_110000", "btc_info_105000"]
       }
     ]
   },
   "info_target": {
     "BTCUSDT": [
       {
+        "name": "btc_info_105000",
         "enable": true,
         "price": "105000",
-        "name": "deafult_info",
-        "desc": "some info thing"
+        "desc": "some info thing",
+        "triggerToClose": ["btc_info_105000"],
+        "triggerToOpen": ["btc_warning_83000", "btc_warning_85000"]
       },
       {
+        "name": "btc_info_110000",
         "enable": true,
         "price": "110000",
-        "name": "deafult_info",
-        "desc": "some info thing"
+        "desc": "some info thing",
+        "triggerToClose": ["btc_info_110000", "btc_info_105000"],
+        "triggerToOpen": ["btc_warning_83000", "btc_warning_85000"]
       }
     ]
   }

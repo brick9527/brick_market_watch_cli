@@ -40,7 +40,7 @@ async function checkSingleNet(urlConfig, proxyConfig) {
   const result = await axios({
     method: urlConfig.method,
     url: urlConfig.url,
-    ...proxyConfig,
+    proxy: proxyConfig,
     timeout: 20000
   });
 

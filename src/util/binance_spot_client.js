@@ -7,7 +7,7 @@ function getClient (proxyConfig) {
     apiKey: config.apiKey,
     apiSecret: config.apiSecret,
     basePath: config.basePath || SPOT_REST_API_PROD_URL,
-    ...proxyConfig,
+    proxy: proxyConfig,
   };
 
   const client = new Spot({ configurationRestAPI });

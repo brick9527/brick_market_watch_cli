@@ -1,5 +1,5 @@
 const logger = process.brickMarketWatchCli.ctx.logger;
-const saveNoticeConfig = require('../../DAO/save_notice_config');
+const saveNoticeConfig = require('../../libs/save_notice_config');
 
 function getNoticeTarget(noticeTargetConfig) {
 

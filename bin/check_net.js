@@ -18,11 +18,11 @@ async function runCheckNect() {
 
   result.isProxyExist = true;
   logger.info('=============检查代理通信=============');
-  if (proxyConfig?.proxy?.host && proxyConfig?.proxy?.port) {
+  if (proxyConfig?.host && proxyConfig?.port) {
 
     logger.info('代理配置：存在');
     try {
-      const checkProxyResult = await checkProxy(proxyConfig?.proxy?.host, proxyConfig?.proxy?.port);
+      const checkProxyResult = await checkProxy(proxyConfig?.host, proxyConfig?.port);
       logger.info(
         `代理连接状态： ${checkProxyResult.success ? '成功' : '失败'}`
       );
@@ -32,7 +32,7 @@ async function runCheckNect() {
     }
   } else {
     result.isProxyExist = false;
-    logger.info('代理状态：不存在');
+    logger.info('代理配置：不存在');
   }
 
   try {
